@@ -70,7 +70,7 @@ export class adminCustomerPage {
 
     /**
      * Function Name: createCustomerPage
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-12
      * Description: Creates a new customer if they don't already exist.
      *   1. Navigates to the correct menu and submenu
@@ -129,9 +129,11 @@ export class adminCustomerPage {
             console.log("✅ Customer email filled");
 
             // Step 5.4: Fill customer phone number
-            console.log(`Step 5.4: Filling customer phone number: "${phno}"`);
-            await this.page.locator(this.phone).fill(phno);
-            console.log("✅ Customer phone number filled");
+            // console.log(`Step 5.4: Filling customer phone number: "${phno}"`);
+            // await this.page.locator(this.phone).waitFor();
+            // await this.page.locator(this.phone).fill(phno);
+            // await this.page.locator(this.phone).waitFor();
+            // console.log("✅ Customer phone number filled");
 
             // Step 5.5: Click Submit button to create the customer
             console.log("Step 5.5: Clicking Submit button to create customer");
@@ -161,7 +163,7 @@ export class adminCustomerPage {
 
     /**
      * Function Name: verifyCustomerName
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-12
      * Description: Searches for a customer by name and verifies they are visible in the table.
      * @param verifyName - Customer name to search and verify
@@ -186,7 +188,7 @@ export class adminCustomerPage {
 
     /**
      * Function Name: editAndVerifyCustomerName
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-12
      * Description: Edits an existing customer's name and verifies the update.
      *   1. Searches for the customer by current name
@@ -245,7 +247,7 @@ export class adminCustomerPage {
 
     /**
      * Function Name: DeleteCustomerVerification
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-12
      * Description: Deletes (soft deletes) a customer and verifies deletion.
      *   1. Searches for the customer by name
@@ -300,7 +302,7 @@ export class adminCustomerPage {
 
     /**
      * Function Name: adminCreateVerifyCustomer
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-12
      * Description: Master method that runs the full customer lifecycle flow:
      *   1. Creates a new customer

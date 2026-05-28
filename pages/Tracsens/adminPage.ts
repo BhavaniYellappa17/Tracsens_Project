@@ -12,13 +12,14 @@ export class AdminPage {
     homePageMenuItems = '//a[contains(@class,"sidebar-link")]//span';
 
     // Submenu items under any expanded main menu (e.g., Customers, Users under Administration)
+    // Scoped to class "lan-4" to avoid matching dashboard stat labels with same text
     adminSubMenu = '//span[contains(@class,"lan-4")]';
 
     // ==================== METHODS ====================
 
     /**
      * Function Name: adminMenuAndSubMenus
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-11
      * Description: Navigates through the sidebar by:
      *   1. Reading all main menu items from the sidebar
@@ -56,7 +57,7 @@ export class AdminPage {
             if (item.trim() === menu.trim()) {
                 console.log(`ℹ️ Match found: "${item.trim()}" — attempting to click`);
                 try {
-                    await this.page.locator(`//span[text()='${item.trim()}']`).click();
+                    await this.page.locator(`//a[contains(@class,"sidebar-link")]//span[text()='${item.trim()}']`).click();
                     console.log(`✅ Main menu "${item.trim()}" clicked successfully`);
                     menuFound = true;
                     break;
@@ -86,12 +87,14 @@ export class AdminPage {
         console.log(`ℹ️ Available submenu items: [${subMenuTexts.map(t => t.trim()).join(', ')}]`);
 
         // Step 7: Loop through submenu items and click the matching one
+        // ✅ XPath scoped to class "lan-4" to avoid strict mode violation
+        // when dashboard stat labels have the same text as submenu items (e.g. "Users")
         console.log(`Step 7: Searching for submenu item: "${sSubMenu}"`);
         for (const items of subMenuTexts) {
             if (items.trim() === sSubMenu.trim()) {
                 console.log(`ℹ️ Match found: "${items.trim()}" — attempting to click`);
                 try {
-                    await this.page.locator(`//span[text()='${items.trim()}']`).click();
+                    await this.page.locator(`//span[contains(@class,'lan-4') and text()='${items.trim()}']`).click();
                     console.log(`✅ Submenu "${items.trim()}" clicked successfully`);
                     subMenuFound = true;
                     break;
@@ -111,7 +114,7 @@ export class AdminPage {
 
     /**
      * Function Name: adminMenuSubmenu
-     * Author: Lakshmi
+     * Author: Bhavani
      * Created Date: 2026-05-12
      * Description: Wrapper method that calls adminMenuAndSubMenus to navigate
      *   to the given main menu and submenu. Use this as the entry point for

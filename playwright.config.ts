@@ -1,137 +1,68 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
 export default defineConfig({
-  // Test folder
-  testDir: './tests',
 
-  // Global timeout
-  timeout: 180000,
+    testDir: './tests',
+
+    // Global timeout per test
+    timeout: 180000,
+
     expect: {
-        timeout: 10000, 
+        timeout: 10000,
     },
-  /* Run tests in files in parallel */
-  fullyParallel: false,
 
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+    // Run spec files one at a time
+    fullyParallel: false,
+    workers: 1,
+    retries: 0,
+    forbidOnly: !!process.env.CI,
 
-  // Number of workers to run parallel
-  workers: 1,
+    reporter: [
+        ['list'],
+        ['html'],
+        ['monocart-reporter', {
+            name: 'Tracsens Report',
+            outputFile: './monocart-report/index.html'
+        }]
+    ],
 
-  /* Retry on CI only */
-
-  retries:0, //process.env.CI ? 2 : 0,
-
-  /* Opt out of parallel tests on CI. */
-  //workers: process.env.CI ? 1 : undefined,
-
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-//  reporter: [
-//   ['html'],
-//   ['./utils/report.ts']
-// ],
-// Reporter
-  
-  reporter: [
-    ['list'],
-    ['html'],
-    ['monocart-reporter', {
-        name: 'Tracsens Report',
-        outputFile: './monocart-report/index.html'
-    }]
-],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
-
-  /* Base URL */
-  baseURL: 'https://prod.tracsens.com',
-
-  // Screenshots
-  screenshot: 'only-on-failure',
-
-  // Videos
-  video: 'on',
-
-  // Trace
-  trace: 'on-first-retry',
-
-  /* Browser visible */
-  headless: false,
-
-  /* Maximize browser */
-  viewport: null,
-
-  launchOptions: {
-    slowMo: 1000,
-    args: ['--start-maximized']
-  },
-
-},
- 
-  projects: [
-
-  {
-    name: 'chromium',
     use: {
-      browserName: 'chromium',
+        // ✅ Add trailing slash to baseURL
+        baseURL: 'https://prod.tracsens.com/',
+
+        // Screenshots
+        screenshot: 'only-on-failure',
+
+        // ✅ Change video from 'on' to 'retain-on-failure'
+        // 'on' keeps browser context open between specs causing about:blank
+        video: 'retain-on-failure',
+
+        // Trace
+        trace: 'on-first-retry',
+
+        // Browser visible
+        headless: false,
+
+        // ✅ Set proper viewport
+        viewport: { width: 1280, height: 720 },
+
+        // ✅ Add navigation and action timeouts
+        // Without these, new context sits on about:blank indefinitely
+         navigationTimeout: 60000,
+         actionTimeout: 30000,
+
+        launchOptions: {
+            slowMo: 1000,
+            args: ['--start-maximized']
+        },
     },
-  },
 
-  // {
-  //   name: 'firefox',
-  //   use: {
-  //     browserName: 'firefox',
-  //   },
-  // },
-
-],
-
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
-    //  {
-    //    name: 'webkit',
-    //    use: { ...devices['Desktop Safari'] },
-    //  },
-
-    /* Test against mobile viewports. */
-    //  {
-    //    name: 'Mobile Chrome',
-    //    use: { ...devices['Pixel 5'] },
-    //  },
-    //  {
-    //   name: 'Mobile Safari',
-    //    use: { ...devices['iPhone 12'] },
-    //  },
-
-    /* Test against branded browsers. */
-  //    {
-  //      name: 'Microsoft Edge',
-  //      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-  //    },
-  //    {
-  //     name: 'Google Chrome',
-  //     use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-  //  },
-  
-
-  /* Run your local dev server before starting the tests */
-  //  webServer: {
-  //    command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  //  },
+    projects: [
+        {
+            name: 'chromium',
+            use: {
+                browserName: 'chromium',
+            },
+        },
+    ],
 });

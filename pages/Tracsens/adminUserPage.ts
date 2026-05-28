@@ -51,15 +51,39 @@ export class adminUserPage {
     // ==================== METHODS ====================
 
     /**
-     * Creates a new user if they don't already exist, then verifies creation.
-     * @param SearchName   - Name to search before creating (duplicate check)
-     * @param fullName     - Full name for the new user
-     * @param userName     - Username for the new user
-     * @param Email        - Email address for the new user
-     * @param password     - Password for the new user
-     * @param verifyName   - Name to search after creation to verify
-     * @param menu         - Top-level menu to navigate to
-     * @param subMenu      - Submenu to navigate to
+     * @function createUserAccountVerify
+     * @author Bhavani
+     * @date 2026-05-11
+     * @description Creates a new user account if the user does not already exist,
+     * then verifies the user appears in the table after creation.
+     * Performs the following steps:
+     *  1. Navigates to the specified menu and submenu
+     *  2. Waits for the user table to load
+     *  3. Searches for the user by name to check for duplicates
+     *  4. If not found, fills and submits the Create User form
+     *  5. Selects customer, fills full name, email, username, and password
+     *  6. Verifies the created user appears in the table
+     *
+     * @param {string} SearchName  - Name to search before creating (used for duplicate check)
+     * @param {string} fullName    - Full name to enter in the Create User form
+     * @param {string} userName    - Username to enter in the Create User form
+     * @param {string} Email       - Email address to enter in the Create User form
+     * @param {string} password    - Password to enter in the Create User form
+     * @param {string} verifyName  - Name to search after creation to verify user was created
+     * @param {string} menu        - Top-level sidebar menu to navigate to (e.g., "Administration")
+     * @param {string} subMenu     - Submenu item to navigate to (e.g., "Users")
+     * @returns {Promise<void>}
+     * @example
+     * await adminUserPage.createUserAccountVerify(
+     *   "John",
+     *   "John Doe",
+     *   "johndoe",
+     *   "john@test.com",
+     *   "Pass@123",
+     *   "John Doe",
+     *   "Administration",
+     *   "Users"
+     * );
      */
     async createUserAccountVerify(
         SearchName: string,
@@ -70,7 +94,7 @@ export class adminUserPage {
         verifyName: string,
         menu: string,
         subMenu: string
-    ) {
+    ): Promise<void> {
         console.log("=== CREATE USER ACCOUNT VERIFY START ===");
 
         // Step 1: Navigate to the correct menu and submenu
@@ -148,11 +172,27 @@ export class adminUserPage {
     }
 
     /**
-     * Edits a user's name, then deletes the user and verifies deletion.
-     * @param editUserName - New name to set for the user
-     * @param fullName     - Current full name to search for the user
+     * @function editDeletUserName
+     * @author Bhavani
+     * @date 2026-05-11
+     * @description Edits an existing user's name and then deletes the user,
+     * verifying both the edit and deletion were successful.
+     * Performs the following steps:
+     *  1. Searches for the user by current full name
+     *  2. Sets Status filter to Active and Roles filter to Operational User
+     *  3. Clicks Edit, updates the name, and saves
+     *  4. Verifies the updated name appears in the table
+     *  5. Searches for the updated user and triggers deletion
+     *  6. Accepts the confirmation dialog
+     *  7. Verifies the user no longer appears in the table
+     *
+     * @param {string} editUserName - New name to set for the user during edit
+     * @param {string} fullName     - Current full name used to search for the user
+     * @returns {Promise<void>}
+     * @example
+     * await adminUserPage.editDeletUserName("John Updated", "John Doe");
      */
-    async editDeletUserName(editUserName: string, fullName: string) {
+    async editDeletUserName(editUserName: string, fullName: string,userName:string): Promise<void> {
         console.log("=== EDIT AND DELETE USER START ===");
 
         // -------------------- EDIT SECTION --------------------
@@ -188,6 +228,7 @@ export class adminUserPage {
         // Step 6: Fill new name in the edit form
         console.log(`Step 6: Filling new name: "${editUserName}"`);
         await this.page.locator('[id="name"]').fill(editUserName);
+        await this.page.locator('[id="username"]').fill(userName);
         console.log("✅ New name filled");
 
         // Step 7: Click Save button
@@ -231,6 +272,8 @@ export class adminUserPage {
 
         // Step 13: Verify deletion — user should no longer be in the table
         console.log(`Step 13: Verifying deletion of user: "${editUserName}"`);
+            await this.page.reload();
+            await this.page.locator(this.userSearchBox).fill(editUserName);
         if (await this.page.locator(`//span[text()='${editUserName}']`).count() === 0) {
             console.log(`✅ User "${editUserName}" deleted successfully`);
         } else {
@@ -241,18 +284,39 @@ export class adminUserPage {
     }
 
     /**
-     * Master method — creates, verifies, edits, and deletes a user in one flow.
-     * @param SearchName   - Name to search before creating (duplicate check)
-     * @param fullName     - Full name for the new user
-     * @param userName     - Username for the new user
-     * @param Email        - Email address for the new user
-     * @param password     - Password for the new user
-     * @param verifyName   - Name to search after creation to verify
-     * @param editUserName - New name to set during edit
-     * @param menu         - Top-level menu to navigate to
-     * @param subMenu      - Submenu to navigate to
+     * @function adminCreateVerifyUser
+     * @author Bhavani
+     * @date 2026-05-11
+     * @description Master method that runs the complete user lifecycle flow in one call:
+     *  1. Creates a new user if they don't already exist
+     *  2. Verifies the user appears in the table after creation
+     *  3. Edits the user's name and verifies the update
+     *  4. Deletes the user and verifies deletion
+     *
+     * @param {string} SearchName   - Name to search before creating (used for duplicate check)
+     * @param {string} fullName     - Full name to enter in the Create User form
+     * @param {string} userName     - Username to enter in the Create User form
+     * @param {string} Email        - Email address to enter in the Create User form
+     * @param {string} password     - Password to enter in the Create User form
+     * @param {string} verifyName   - Name to search after creation to verify user was created
+     * @param {string} editUserName - New name to set for the user during edit
+     * @param {string} menu         - Top-level sidebar menu to navigate to (e.g., "Administration")
+     * @param {string} subMenu      - Submenu item to navigate to (e.g., "Users")
+     * @returns {Promise<void>}
+     * @example
+     * await adminUserPage.adminCreateVerifyUser(
+     *   "John",
+     *   "John Doe",
+     *   "johndoe",
+     *   "john@test.com",
+     *   "Pass@123",
+     *   "John Doe",
+     *   "John Updated",
+     *   "Administration",
+     *   "Users"
+     * );
      */
-    async adminCreateVerifyUser(
+    async adminCreateVerifyEditDeleteUser(
         SearchName: string,
         fullName: string,
         userName: string,
@@ -262,7 +326,7 @@ export class adminUserPage {
         editUserName: string,
         menu: string,
         subMenu: string
-    ) {
+    ): Promise<void> {
         console.log("=== ADMIN CREATE VERIFY USER FLOW START ===");
 
         // Step 1: Create and verify the user
@@ -272,53 +336,9 @@ export class adminUserPage {
 
         // Step 2: Edit and delete the user
         console.log("Step 2: Starting user edit and deletion");
-        await this.editDeletUserName(editUserName, fullName);
+        await this.editDeletUserName(editUserName, fullName,userName);
         console.log("✅ User edit and deletion complete");
 
         console.log("=== ADMIN CREATE VERIFY USER FLOW END ===");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
