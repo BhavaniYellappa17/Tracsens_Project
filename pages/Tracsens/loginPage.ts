@@ -1,9 +1,7 @@
 import { Page,expect } from "@playwright/test";
 export class LoginPage{
     constructor(public page:Page)
-    {
- 
-    }
+    {}
  
     //********************locators*****************
     // Application logo on login page

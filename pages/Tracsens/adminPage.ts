@@ -1,225 +1,134 @@
-import { Page,expect } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 
-export class AdminPage{
-      //Name!: string;
-    constructor(public page:Page){
-        
+export class AdminPage {
+
+    constructor(public page: Page) {
+        this.page = page;
     }
 
-    
-    customerPagetext='Manage companies and customer accounts (';
-    
-    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
-     homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
+    // ==================== LOCATORS ====================
 
-    // Submenu items under Administration (Customers, Users)
-     adminSubMenu='//span[@class="lan-4"]';
+    // Sidebar main menu items (e.g., Home, Administration, Outlet Management, Product Management)
+    homePageMenuItems = '//a[contains(@class,"sidebar-link")]//span';
 
-    // Button to open Create Customer form
-     createCustomerButton='//button[text()="Create customer"]';
+    // Submenu items under any expanded main menu (e.g., Customers, Users under Administration)
+    adminSubMenu = '//span[contains(@class,"lan-4")]';
 
-    // Input fields in Create Customer form
-     customerName='//input[@id="modal-name"]';
-     email='//input[@id="modal-email"]';
-     phone='//input[@id="modal-phone"]';
+    // ==================== METHODS ====================
 
-     // File upload field 
-     choose_File='//input[@type="file"]';
-
-
-     // Submit button for creating customer
-     submitButton='//button[@type="submit"]';
-
-     // Heading or title of Create Customer modal
-     createCustomerPageText='//h5[text()="Create customer"]';
-
-     // Search box inside customer page
-     //searchBox='//input[@placeholder="Search by name, email or ID..."]';
-     searchBox = `(//p[contains(text(),"${this.customerPagetext}")]/following::input)[1]`;
-
-     //editButton
-     editButton='(//button[@title="Edit"])[1]';
-
-     //CustomerName table
-     customerNameTableFirstRow = '//div[@class="customer-row-neat outlet-row-neat"][1]';
-     
-     
     /**
- * Function Name: adminMenuAndSubMenus
- * Author: Lakshmi
- * Created Date: 2026-05-11
- * Description: This function navigates through the sidebar menu by:-
- * 1. Finding the given main menu (e.g., "Administration")
- * 2. Clicking on it if found
- * 3. Logs success or failure based on availability
- *This function navigates through the Administration sub menu by:
- * 1. Reading all available sub menu items under the selected main menu
- * 2. Finding the given sub menu item (e.g., "Customers")
- * 3. Clicking on it if found
- * 4. Logs success or failure based on availability
- * Parameters:
- * @param menu - Main menu name to be clicked (e.g., "Administration")
- * Example Usage:adminMenuAndSubMenus('Administration', 'Customers');
- * Main Menu → Click "Administration"
- */
-   
-   
-    // Navigate to Administration → Customers → Open Create Customer form
-    async adminMenuAndSubMenus(menu:string,sSubMenu:string){
-         let found = false;
+     * Function Name: adminMenuAndSubMenus
+     * Author: Lakshmi
+     * Created Date: 2026-05-11
+     * Description: Navigates through the sidebar by:
+     *   1. Reading all main menu items from the sidebar
+     *   2. Finding and clicking the given main menu (e.g., "Administration")
+     *   3. Waiting for the submenu to expand
+     *   4. Finding and clicking the given submenu item (e.g., "Customers")
+     *   5. Logging success or failure at each step
+     * @param menu     - Main menu name to click (e.g., "Administration")
+     * @param sSubMenu - Submenu name to click (e.g., "Customers")
+     * Example: adminMenuAndSubMenus('Administration', 'Customers');
+     */
+    async adminMenuAndSubMenus(menu: string, sSubMenu: string) {
+        console.log("=== ADMIN MENU AND SUBMENU NAVIGATION START ===");
+        console.log(`ℹ️ Target Menu: "${menu}" | Target SubMenu: "${sSubMenu}"`);
 
-    // Wait for sidebar menu to be visible
-      await this.page.locator(this.homePageMenuItems).first().waitFor();
-     const texts=await this.page.locator(this.homePageMenuItems).allTextContents();
-     for (const item of texts) {
-      if (item === menu) {
-        try {
-            await this.page.locator(`//span[text()='${item.trim()}']`).click();
-            console.log(`Successfully clicked ${item}`);
-            found = true;
-            break;
-        } catch (error) {
-            console.log(`Error while clicking ${item}:`, error);
+        // Flags to track whether menu and submenu were found and clicked
+        let menuFound    = false;
+        let subMenuFound = false;
+
+        // -------------------- MAIN MENU SECTION --------------------
+
+        // Step 1: Wait for sidebar menu items to be visible before reading them
+        console.log("Step 1: Waiting for sidebar main menu items to be visible");
+        await this.page.locator(this.homePageMenuItems).first().waitFor();
+        console.log("✅ Sidebar menu items are visible");
+
+        // Step 2: Read all main menu item texts from the sidebar
+        console.log("Step 2: Reading all main menu item texts from sidebar");
+        const texts = await this.page.locator(this.homePageMenuItems).allTextContents();
+        console.log(`ℹ️ Available main menu items on page: [${texts.map(t => t.trim()).join(', ')}]`);
+
+        // Step 3: Loop through menu items and click the matching one
+        console.log(`Step 3: Searching for main menu item: "${menu}"`);
+        for (const item of texts) {
+            if (item.trim() === menu.trim()) {
+                console.log(`ℹ️ Match found: "${item.trim()}" — attempting to click`);
+                try {
+                    await this.page.locator(`//span[text()='${item.trim()}']`).click();
+                    console.log(`✅ Main menu "${item.trim()}" clicked successfully`);
+                    menuFound = true;
+                    break;
+                } catch (error) {
+                    console.log(`❌ Error while clicking main menu "${item.trim()}":`, error);
+                }
+            }
         }
+
+        // Step 4: If main menu was not found, log and exit early
+        if (!menuFound) {
+            console.log(`❌ Main menu "${menu}" not found in sidebar — available items: [${texts.map(t => t.trim()).join(', ')}]`);
+            console.log("=== ADMIN MENU AND SUBMENU NAVIGATION END (MENU NOT FOUND) ===");
+            return;
+        }
+
+        // -------------------- SUBMENU SECTION --------------------
+
+        // Step 5: Wait for submenu items to appear after clicking main menu
+        console.log(`Step 5: Waiting for submenu items to appear after clicking "${menu}"`);
+        await this.page.locator(this.adminSubMenu).first().waitFor({ state: 'visible' });
+        console.log("✅ Submenu items are visible");
+
+        // Step 6: Read all submenu item texts
+        console.log("Step 6: Reading all submenu item texts");
+        const subMenuTexts = await this.page.locator(this.adminSubMenu).allTextContents();
+        console.log(`ℹ️ Available submenu items: [${subMenuTexts.map(t => t.trim()).join(', ')}]`);
+
+        // Step 7: Loop through submenu items and click the matching one
+        console.log(`Step 7: Searching for submenu item: "${sSubMenu}"`);
+        for (const items of subMenuTexts) {
+            if (items.trim() === sSubMenu.trim()) {
+                console.log(`ℹ️ Match found: "${items.trim()}" — attempting to click`);
+                try {
+                    await this.page.locator(`//span[text()='${items.trim()}']`).click();
+                    console.log(`✅ Submenu "${items.trim()}" clicked successfully`);
+                    subMenuFound = true;
+                    break;
+                } catch (error) {
+                    console.log(`❌ Error while clicking submenu "${items.trim()}":`, error);
+                }
+            }
+        }
+
+        // Step 8: If submenu was not found, log the failure
+        if (!subMenuFound) {
+            console.log(`❌ Submenu "${sSubMenu}" not found — available items: [${subMenuTexts.map(t => t.trim()).join(', ')}]`);
+        }
+
+        console.log("=== ADMIN MENU AND SUBMENU NAVIGATION END ===");
     }
-}
 
-if (!found) {
-    console.log(`Not matched MenuItems`);
-}
-        
-        
-    /*This function navigates through the Administration sub menu by:
-      1. Reading all available sub menu items under the selected main menu
-      2. Finding the given sub menu item (e.g., "Customers")
-      3. Clicking on it if found
-      4. Logs success or failure based on availability
-     Parameters:
-      @param sSubMenu - Sub menu name to be clicked (e.g., "Customers")
-      Example Usage:
-     *await adminPage.adminMenuAndSubMenus('Administration', 'Customers');
-      Sub Menu → Click "Customers"
-    */
- 
-     //Administration sub menu
-     await this.page.locator(this.adminSubMenu).first().isVisible(); 
-     // Get all menu texts as an array
-     const text=await this.page.locator(this.adminSubMenu).allTextContents();
-     // Loop through each menu item texts
-     for(const items of text){
-        console.log(items);
-        // Check if current item matches the menu
-         if (items === sSubMenu) {
-           try {
-            // Click the matched submenu
-            await this.page.locator(`//span[text()='${items.trim()}']`).click();
-            console.log(`Successfully clicked ${items}`);
-            found = true;
-            break;
-        }  catch (error) {
-            console.log(`Error while clicking ${items}:`, error);
-        }
+    /**
+     * Function Name: adminMenuSubmenu
+     * Author: Lakshmi
+     * Created Date: 2026-05-12
+     * Description: Wrapper method that calls adminMenuAndSubMenus to navigate
+     *   to the given main menu and submenu. Use this as the entry point for
+     *   all menu navigation across test flows.
+     * @param menu    - Main menu name to click (e.g., "Administration")
+     * @param subMenu - Submenu name to click (e.g., "Customers")
+     * Example: adminMenuSubmenu("Administration", "Customers");
+     */
+    async adminMenuSubmenu(menu: string, subMenu: string) {
+        console.log("=== ADMIN MENU SUBMENU WRAPPER START ===");
+        console.log(`ℹ️ Navigating to: "${menu}" > "${subMenu}"`);
+
+        // Step 1: Delegate navigation to adminMenuAndSubMenus
+        console.log("Step 1: Calling adminMenuAndSubMenus for navigation");
+        await this.adminMenuAndSubMenus(menu, subMenu);
+        console.log(`✅ Navigation to "${menu}" > "${subMenu}" complete`);
+
+        console.log("=== ADMIN MENU SUBMENU WRAPPER END ===");
     }
-}
-        // After loop, if no match found
-        if(!found){
-               console.log(`Not matched SubMenuItems`);
-        }
-     } 
-
-     /**
- * Function Name: createCustomerPage
- * Author: Lakshmi
- * Created Date: 2026-05-12
- * Description:This function creates a new customer in the system if the customer does not already exist.
- * It performs the following steps:-
- * 1. Searches for an existing customer using the given name
- * 2. Checks whether the customer already exists in the list
- * 3. If not found, clicks on the "Create Customer" button
- * 4. Enters customer details such as Name, Email, and Phone Number
- * 5. Submits the form to create the customer
- * 6. Logs success or shows message if customer already exists
- * Parameters:
- * @param Name - Customer name to be created/searched
- * @param Email - Customer email address
- * @param phno - Customer phone number
- * Example Usage:createCustomerPage("John Doe", "john@test.com", "9876543210");
- */
-      //Enter Customer Detail
-     async createCustomerPage(Name: string, Email: string, phno: string) {
-      
-       await this.page.locator(this.customerNameTableFirstRow).waitFor();
-       await this.page.locator(this.searchBox).fill(Name);
-       await this.page.waitForTimeout(globalThis.giSMALLWAIT);
-       console.log(globalThis.giSMALLWAIT);
-       //await expect(this.page.locator('customerNameTable').first()).toBeVisible();
-       console.log(((await this.page.locator(`text=${Name}`).count())));
-       if (!(await this.page.locator(`text=${Name}`).count())) {   
-        await this.page.locator(this.createCustomerButton).click();
-        await this.page.locator(this.customerName).fill(Name);
-        await this.page.locator(this.email).fill(Email);
-        await this.page.locator(this.phone).fill(phno);
-        await this.page.locator(this.submitButton).click();
-         console.log("Customer created Successfully");
-    } else {
-        console.log("Customer already exists");
-    }
-}
-    //Verify CustomerName
-     async verifyCustomerName(verifyName:string){
-        await this.page.locator(this.searchBox).fill(verifyName);
-        if ((await this.page.locator(`text=${verifyName}`).isVisible())) {
-            console.log(`Customer "${verifyName}" is Present`);
-
-         }
-         else{
-               console.log(`Customer "${verifyName}" is not Present`);
-         }
-        }
-
-//Edit Customer
-        //   async editCustomerName(editCustomerName: string)
-        //   {
-        //       await this.page.locator(this.searchBox).fill(this.Name);
-        //       await this.page.waitForTimeout(6000);
-        //       await this.page.locator(this.editButton).click();
-        //       await this.page.locator(this.customerName).clear();
-        //       await this.page.locator(this.customerName).fill(editCustomerName);
-        //       await this.page.locator(this.submitButton).click();
-        //   }
-
-
-/**
- * Function Name: createCustomerFlow
- * Author: Lakshmi
- * Created Date: 2026-05-12
- * Description:This function combines complete Admin flow:-
- * 1. Navigates to Administration → Customers
- * 2. Searches or creates a new customer
- * Parameters:
- * @param menu - Main menu name (e.g., "Administration")
- * @param subMenu - Sub menu name (e.g., "Customers")
- * @param Name - Customer name
- * @param Email - Customer email
- * @param phno - Customer phone number
- * Example:createCustomerFlow("Administration",
- *   "Customers",
- *   "John",
- *   "john@test.com",
- *   "9876543210");
- */
-    async createCustomerT(menu: string,subMenu: string,Name: string,Email: string,phno: string,verifyName:string) {
-     //this.Name = Name;
-    // Step 1: Navigate to Admin → Submenu
-    await this.adminMenuAndSubMenus(menu, subMenu);
-
-    // Step 2: Create/Search Customer
-    await this.createCustomerPage(Name, Email, phno);
-    
-    //Verify Customer Name
-    await this.verifyCustomerName(verifyName);
-
-    //Edit CustomerName
-    //await this.editCustomerName(editCustomerName);
-}
 }

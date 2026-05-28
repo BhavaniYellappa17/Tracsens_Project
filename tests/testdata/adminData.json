@@ -1,29 +1,20 @@
-[
+  [
   {
     "menu": "Administration",
-    "subMenu": "Customers",
-    "name": "Rahul Verma",
-    "email": "rahul.verma@gmail.com",
-    "phone": "7003268443",
-    "verifyName": "Rahul Verma"
-    
-  },
-  {
-    "menu": "Administration",
-    "subMenu": "Customers",
-    "name": "Arjun Mehta",
-    "email": "arjun@gmail.com",
-    "phone": "8001048221",
-    "verifyName":"Arjun Mehta"
-    
-  },
-  {
-    "menu": "Administration",
-    "subMenu": "Customers",
-    "name": "John Doe",
-    "email": "john@test.com",
-    "phone": "9000000000",
-    "verifyName":"John Doe"
-    
+    "customerSubMenu": "Customers",
+    "UserSubMenu" : "Users",
+    "customerName": "Zara Mitchell",
+    "customerEmail": "Zara01@gmail.com",
+    "customerPhone": "9980314777",
+    "customerVerifyName": "Zara Mitchell",
+    "editcustomerName": "Zara",
+    "userSearch": "Zara Mitchell",
+     "userFullName" : "ZaraMitchell",
+     "userName" : "zaraaa",
+     "userPassword" : "Validcredential@123456",
+     "userVerifyName" : "ZaraMitchell",
+     "editUserName": "Zara MitchellPPP"
   }
-]
+  ]
+  
+

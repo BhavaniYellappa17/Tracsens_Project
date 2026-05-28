@@ -16,17 +16,18 @@ export default defineConfig({
   testDir: './tests',
 
   // Global timeout
-  timeout: 60000,
-  
-
+  timeout: 180000,
+    expect: {
+        timeout: 10000, 
+    },
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
 
   // Number of workers to run parallel
-  workers: 2,
+  workers: 1,
 
   /* Retry on CI only */
 
@@ -52,57 +53,49 @@ export default defineConfig({
 ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
- 
-  /* Base URL to use in actions like `await page.goto('')`. */
+
+  /* Base URL */
   baseURL: 'https://prod.tracsens.com',
-      // Screenshots
-        screenshot: 'only-on-failure',        // 'on' | 'off' | 'only-on-failure'
 
-        // Videos
-        video: 'on',             // 'on' | 'off' | 'only-on-failure' | 'retain-on-failure'
+  // Screenshots
+  screenshot: 'only-on-failure',
 
-        // Trace
-        //trace: 'on',
- 
+  // Videos
+  video: 'on',
+
+  // Trace
+  trace: 'on-first-retry',
+
   /* Browser visible */
-  headless: true,
- 
+  headless: false,
+
   /* Maximize browser */
   viewport: null,
- 
+
   launchOptions: {
+    slowMo: 1000,
     args: ['--start-maximized']
   },
- 
-  /* Collect trace when retrying the failed test */
-  trace: 'on-first-retry',
+
 },
  
-  /* Configure projects for major browsers */
   projects: [
+
   {
     name: 'chromium',
     use: {
       browserName: 'chromium',
-      viewport: null,
-      launchOptions: {
-        args: ['--start-maximized'],
-      },
-    },
-  },
-  {
-    name: 'firefox',
-    use: {
-      browserName: 'firefox',
-      viewport: null,
-      launchOptions: {
-        args: ['--start-maximized'],
-      },
     },
   },
 
+  // {
+  //   name: 'firefox',
+  //   use: {
+  //     browserName: 'firefox',
+  //   },
+  // },
+
 ],
-  
 
     // {
     //   name: 'firefox',
