@@ -44,7 +44,8 @@ export default defineConfig({
         headless: false,
 
         // ✅ Set proper viewport
-        viewport: { width: 1280, height: 720 },
+        //viewport: { width: 1280, height: 720 },
+        viewport:null,
 
         // ✅ Add navigation and action timeouts
         // Without these, new context sits on about:blank indefinitely

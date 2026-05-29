@@ -1,18 +1,44 @@
 import { Page,expect } from "@playwright/test";
-import { OutletPage } from "./outletManagement";
+import { OutletMenuNav } from "../outletMenuNavigation";
 export class OutletInformationPage{
-      outletPage:OutletPage;
-    constructor(public page:Page){
-        this.outletPage = new OutletPage(page);
+    /**
+     * OutletMenuNav instance — handles sidebar menu and submenu navigation
+     * Reused from outletMenuNavigation.ts to avoid code duplication
+     */
+    outletMenuNav: OutletMenuNav;
+  constructor(public page:Page){
+    // Reuse OutletMenuNav for sidebar navigation
+        this.outletMenuNav = new OutletMenuNav(page);
     }
 
     //******************* Locators ******************/
 
-    // Outlet Information tab link on outlet details page
+    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
+     homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
+
+     // Submenu items under OutletManagement (Outlets)
+     outletSubMenu='(//a/span[@class="lan-5"])[1]';
+
+     // Outlet Information tab link on outlet details page
     outletInformationLink='//span[text()="Outlet Information"]';
+
+    //Outlet name link to click and navigate to outlet details
+     outletNameText='//a[@class="outlet-name-text mb-1"]';
 
     //Outlet name heading on outlet information page
     outletName='//h2[@class="outlet-name-heading mb-0 fw-black text-dark"]';
+
+    //Outlet Management page header (used for validation)
+     outletMngPage='//h1[text()="Outlet Management"]';
+
+     //Search input field for outlet name
+     searchByOutletNames='//input[@placeholder="Search by name, external id, or location..."]';
+
+     //Created date filter dropdown
+     filterDate='//select[@class="input-created-filter-type form-select"]';
+
+     //All dropdown options under created date filter
+     selectOptions='//select[@class="input-created-filter-type form-select"]/option';
 
     //External ID value 
     externalId=`(//p[contains(@class,'outlet-ids-line')]//span[@class='fw-bold text-dark'])[1]`;
@@ -43,47 +69,76 @@ export class OutletInformationPage{
 
     //Created Date
     createdDate='//div[contains(@class,"identity-updated-col")]//span';
-
-    /**
+/**
      * Function Name: outletInformation
      * Author: Lakshmi
      * Created Date: 2026-05-27
-     * Description: This function fetches all outlet information details by:
-     * 1. Clicking the Outlet Information tab
-     * 2. Fetching Outlet Name
-     * 3. Fetching External ID
-     * 4. Fetching System ID
-     * 5. Fetching Registered Address
-     * 6. Fetching Secondary or Unit address
-     * 7. Fetching City or Township
-     * 8. Fetching Region or Territory
-     * 9. Fetching State or Province
-     * 10. Fetching Postal Code
-     * 11. Fetching Coordinates (Lat/Lng)
-     * 12. Fetching Created Date
+     * Description: This function performs end-to-end navigation and data
+     * extraction for a specific outlet's information page by:
      *
-     * Parameters: None
+     * Navigation Steps:
+     * 1. Reuses OutletMenuNav to navigate to Outlet Management page
+     *    (handles sidebar menu and submenu clicks internally)
+     *
+     * Search and Filter Steps:
+     * 2. Fills the search box with the given outlet name
+     * 3. Opens the date filter dropdown
+     * 4. Loops through filter options to find and select the given filter
+     * 5. Clicks the outlet name to navigate to outlet details page
+     *
+     * Data Extraction Steps:
+     * 6.  Clicks the Outlet Information tab
+     * 7.  Fetches and logs Outlet Name
+     * 8.  Fetches and logs External ID
+     * 9.  Fetches and logs System ID
+     * 10. Fetches and logs Registered Address
+     * 11. Fetches and logs Secondary/Unit address
+     * 12. Fetches and logs City/Township
+     * 13. Fetches and logs Region/Territory
+     * 14. Fetches and logs State/Province
+     * 15. Fetches and logs Postal Index Code
+     * 16. Fetches and logs Coordinates (Lat/Lng)
+     * 17. Fetches and logs Created Date
+     *
+     * @param menu             - Main menu name to click (e.g., "Outlet Management")
+     * @param subMenu          - Sub menu name to click (e.g., "Outlets")
+     * @param searchOutletName - Outlet name to search (e.g., "Madhuloka liquor")
+     * @param filter           - Filter value to select (e.g., "All time")
      *
      * Example Usage:
-     * outletInformation();
-     *
-     * Outlet Information Tab → Click to navigate to outlet information
-     * Outlet Name            → Fetch outlet name
-     * External ID            → Fetch external ID
-     * System ID              → Fetch system ID
-     * Registered Address     → Fetch registered address
-     * Secondary/Unit         → Fetch secondary address
-     * City/Township          → Fetch city or township
-     * Region                 → Fetch region or territory
-     * State                  → Fetch state or province
-     * Postal Code            → Fetch postal index code
-     * Coordinates            → Fetch coordinates lat and lng
-     * Created Date           → Fetch outlet created date
+     * await outletInformation('Outlet Management', 'Outlets', 'Madhuloka liquor', 'All time');
      */
-
     async outletInformation(menu:string,subMenu:string,searchOutletName:string,filter:string){
-
-        await this.outletPage.outletMenuAndSubMenu(menu,subMenu,searchOutletName,filter);
+        //Reuse OutletMenuNav to navigate to Outlet Management page
+        // This handles sidebar menu click and submenu click internally
+        await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
+        await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
+        await this.page.locator(this.filterDate).click();
+        const options = await this.page.locator(this.selectOptions).allTextContents();
+        console.log(options);
+        let filterFound  = false;
+     // Loop through dropdown options to find matching filter
+     for (const item of options) {
+             if (item.trim() === filter) {
+              try {
+                    await this.page.locator(this.filterDate).selectOption({ label: filter });
+                    console.log(`Filter "${item}" was successfully selected from the dropdown.`);
+                    filterFound = true;
+                    break;
+    
+                } catch (error) 
+                {
+                    console.log(`Error while clicking ${item}:`, error);
+                }
+       
+           }
+        }
+// If filter not found
+if (!filterFound) {
+  console.log(`Filter "${filter}" not available in dropdown.`);
+}
+        await this.page.locator(this.outletNameText).click();  
+        
         await this.page.locator(this.outletInformationLink).click();
         console.log("\n========== OUTLET INFORMATION ==========");
 

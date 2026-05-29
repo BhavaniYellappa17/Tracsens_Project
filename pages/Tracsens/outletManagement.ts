@@ -1,11 +1,9 @@
 import { Page,expect } from "@playwright/test";
-//import { AdminPage } from "./adminPage";
-
+import { OutletMenuNav } from "../outletMenuNavigation";
 export class OutletPage{
-        //adminPage: AdminPage;  
+    outletMenuNav: OutletMenuNav;
     constructor(public page:Page){
-        //this.page = page;
-        //this.adminPage = new AdminPage(this.page)
+        this.outletMenuNav = new OutletMenuNav(page);
     }
     // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
      homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
@@ -128,41 +126,8 @@ export class OutletPage{
      * Filter       → Select date filter from dropdown
      * Navigate     → Click outlet name to go to outlet details
      */
-    async outletMenuAndSubMenu(menu:string,subMenu:string,searchOutletName:string,filter:string):Promise<string[]>{
-        //await this.adminPage.adminMenuAndSubMenus(menu, subMenu);
-         let found = false;
-
-    // Wait for sidebar menu to be visible
-      await this.page.locator(this.homePageMenuItems).first().waitFor();
-     // Get all menu item texts
-      const texts=await this.page.locator(this.homePageMenuItems).allTextContents();
-      console.log(texts);
-      // Loop through menu items and click matching menu
-      for (const item of texts) {
-      if (item === menu) {
-        try {
-            await this.page.locator(`//span[text()='${item.trim()}']`).click();
-            console.log(`Successfully clicked ${item}`);
-            found = true;
-            break;
-        } catch (error) {
-            console.log(`Error while clicking ${item}:`, error);
-        }
-    }
-}
- // If menu not found
-if (!found) {
-    console.log(`Not matched MenuItems`);
-}
-        // Validate submenu presence
-     await this.page.locator(this.outletSubMenu).first().isVisible(); 
-
-     // Get all subMenu texts as an array(Outlets)
-     const text=await this.page.locator(this.outletSubMenu).allTextContents();
-     console.log(text);
-     await this.page.locator(this.outletSubMenu).click();
-     await this.page.locator(this.outletMngPage).isVisible();
-     console.log("Successfully Navigates to Outlet Management Page");
+    async outletManagementPage(menu:string,subMenu:string,searchOutletName:string,filter:string):Promise<string[]>{
+     await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
      const allOutletNames:string[]=[];
      const allExternalId:string[]=[];
      const allCreatedDate:string[]=[];
