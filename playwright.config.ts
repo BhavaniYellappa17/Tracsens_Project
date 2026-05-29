@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
 
-    testDir: './tests',
+    testDir: './tests/tracsensTest',
 
     // Global timeout per test
     timeout: 180000,
