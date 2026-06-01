@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
 
-    testDir: './tests',
+    testDir: './tests/tracsensTest',
 
     // Global timeout per test
     timeout: 180000,
@@ -44,12 +44,13 @@ export default defineConfig({
         headless: false,
 
         // ✅ Set proper viewport
-        viewport: { width: 1280, height: 720 },
+        //viewport: { width: 1280, height: 720 },
+         viewport: null,
 
-        // ✅ Add navigation and action timeouts
-        // Without these, new context sits on about:blank indefinitely
-         navigationTimeout: 60000,
-         actionTimeout: 30000,
+        // // ✅ Add navigation and action timeouts
+        // // Without these, new context sits on about:blank indefinitely
+        //  navigationTimeout: 60000,
+        //  actionTimeout: 30000,
 
         launchOptions: {
             slowMo: 1000,
