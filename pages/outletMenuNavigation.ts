@@ -46,40 +46,53 @@ export class OutletMenuNav{
      */
 
      async outletMenuAndSubMenu(menu:string,subMenu:string){
-      let found = false;
+      let menuFound = false;
 
     // Wait for sidebar menu to be visible
       await this.page.locator(this.homePageMenuItems).first().waitFor();
      // Get all menu item texts
       const texts=await this.page.locator(this.homePageMenuItems).allTextContents();
       console.log(texts);
+      //Check if submenu already visible
+     const isSubMenuVisible = await this.page.locator(`//a/span[text()='${subMenu}']`).isVisible().catch(() => false);
       // Loop through menu items and click matching menu
+      if (!isSubMenuVisible) {
       for (const item of texts) {
       if (item === menu) {
         try {
+            
             await this.page.locator(`//span[text()='${item.trim()}']`).click();
             console.log(`Successfully clicked ${item}`);
-            found = true;
+            menuFound = true;
             break;
         } catch (error) {
             console.log(`Error while clicking ${item}:`, error);
         }
     }
 }
+      }
+      else {
+             console.log("Menu already expanded, skipping click");
+             menuFound = true;
+}
  // If menu not found
-if (!found) {
-    console.log(`Not matched MenuItems`);
+if (!menuFound) {
+    throw new Error("Menu not found");
+    // console.log(`Not matched MenuItems`);
+    // return;
 
 }
     const subMenus=await this.page.locator(this.outletSubMenu).allTextContents();
       console.log(subMenus);
+       let subMenuFound = false;
       // Loop through menu items and click matching menu
       for (const item of subMenus) {
       if (item === subMenu) {
         try {
+            
             await this.page.locator(`//a/span[text()='${item.trim()}']`).click();
             console.log(`Successfully clicked SubMenu ${item}`);
-            found = true;
+            subMenuFound = true;
             break;
         } catch (error) {
             console.log(`Error while clicking ${item}:`, error);
@@ -87,8 +100,10 @@ if (!found) {
     }
 }
  // If menu not found
-if (!found) {
-    console.log(`Not matched SubMenuItems`);
+if (!subMenuFound) {
+    throw new Error("SubMenu not found");
+    // console.log(`Not matched SubMenuItems`);
+    // return;
 }
         // Validate submenu presence
      //await this.page.locator(this.outletSubMenu).first().isVisible(); 

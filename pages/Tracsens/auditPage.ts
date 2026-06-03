@@ -132,6 +132,7 @@ export class AuditPage{
      * await auditsPage('Outlet Management', 'Outlets', 'Madhuloka liquor', 'All time', 'AUD-123', 'All Categories');
      */
 async auditsPage(menu:string,subMenu:string,searchOutletName:string,filter:string,targetAuditId: string, selectCategory: string) {
+  
   //Reuse OutletMenuNav to navigate to Outlet Management page
         // This handles sidebar menu click and submenu click internally
       await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
@@ -160,9 +161,29 @@ async auditsPage(menu:string,subMenu:string,searchOutletName:string,filter:strin
 if (!filterFound) {
   console.log(`Filter "${filter}" not available in dropdown.`);
 }
-        await this.page.locator(this.outletNameText).click(); 
+        // await this.page.locator(this.outletNameText).click(); 
+        // Wait for search results to load
+await this.page.waitForTimeout(2000); 
+
+// Get all outlet names after search
+const results = await this.page.locator(this.outletNameText).allTextContents();
+
+// Check if searched outlet exists
+const match = results.find(name =>name.trim().toLowerCase() === searchOutletName.trim().toLowerCase());
+if (match) {
+    console.log(`Outlet found: ${match}`);
+
+    // Click exact matching outlet
+    await this.page.locator(`//a[text()='${match}']`).click();
+
+} else {
+    console.log(`Outlet "${searchOutletName}" not found`);
+}
+
+
 //Navigate to the Audits section
         await this.page.locator(this.audits).click();
+        let auditFound = false;
 //Loop through all pages to find the target Audit ID
     while (true) {
     // Get all rows on the current page
@@ -173,7 +194,9 @@ if (!filterFound) {
       const row = rows.nth(i);
       const text = await row.textContent();
      //If the Audit ID matches, scroll to it and click View button
-      if (text?.includes(targetAuditId)) {
+      //if (text?.includes(targetAuditId)) {
+      if (targetAuditId && text?.includes(targetAuditId)) {
+        auditFound = true;
         await row.scrollIntoViewIfNeeded();
         await row.locator(this.viewButton).click();
         console.log("\n========== AUDIT INFORMATION ==========");
@@ -204,7 +227,11 @@ if (!filterFound) {
 
         if (!categoryFound) {
           console.log(`Category "${selectCategory}" not available in dropdown.`);
+          await this.page.locator(this.closeButton).click();
+          console.log("Stopping execution for this audit.");
+          return;
         }
+       
         const nOfRacks=await this.page.locator(this.racks);
         const rackcount=await nOfRacks.count();
         console.log(rackcount);
@@ -258,12 +285,27 @@ if (!filterFound) {
          
       }
     }
-     //If Audit ID not found on current page, navigate to next page
-    await this.page.locator(this.nextButton).click();
-    
-    
-  }
+     
+    //await this.page.locator(this.nextButton).click();
+    //If Audit ID not found on current page, navigate to next page
+    const nextBtn = this.page.locator(this.nextButton);
+     const isDisabled = await nextBtn.isDisabled();
 
+    if (isDisabled) {
+        console.log(`❌ Audit ID "${targetAuditId}" not found in any page`);
+        break;
+    }
+
+    await nextBtn.click();
+    await this.page.waitForTimeout(1000);
+
+}
+if (!auditFound) {
+    throw new Error(`Audit ID "${targetAuditId}" not found`);
 }
 
 }
+     
+}
+
+

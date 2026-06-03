@@ -1,6 +1,6 @@
 import { Page,expect } from "@playwright/test";
 import { OutletMenuNav } from "../outletMenuNavigation";
-export class OutletPage{
+export class AllOutletNames{
     outletMenuNav: OutletMenuNav;
     constructor(public page:Page){
         this.outletMenuNav = new OutletMenuNav(page);
@@ -78,55 +78,41 @@ export class OutletPage{
 
      //Export PDF Button
      exportPdf='//button[text()="Export PDF"]';
-
-  /**
-     * Function Name: outletMenuAndSubMenu
-     * Author: Lakshmi
-     * Created Date: 2026-05-25
-     * Description: This function navigates through the sidebar menu by:
-     * 1. Waiting for sidebar menu to be visible
-     * 2. Finding the given main menu (e.g., "Outlet Management")
-     * 3. Clicking on it if found
-     * 4. Logs success or failure based on availability
-     *
-     * This function navigates through the Outlet Management sub menu by:
-     * 1. Reading all available sub menu items under the selected main menu
-     * 2. Finding the given sub menu item (e.g., "Outlets")
-     * 3. Clicking on it if found
-     * 4. Validates navigation to Outlet Management page
-     *
-     * This function collects all outlet data from all pages by:
-     * 1. Collecting all outlet names from current page
-     * 2. Collecting all external IDs from current page
-     * 3. Collecting all created dates from current page
-     * 4. Checking if next button is disabled
-     * 5. If not disabled clicks next page and repeats
-     * 6. If disabled stops and prints all collected data
-     *
-     * This function also performs search and filter operations by:
-     * 1. Searching the given outlet name in collected data
-     * 2. If found fills the search box with outlet name
-     * 3. Selecting the required filter from the dropdown (e.g., "Today", "All time")
-     * 4. Clicking the outlet name to navigate to outlet details
-     * 5. If not found logs outlet not found message
-     *
-     * Parameters:
-     * @param menu             - Main menu name to be clicked (e.g., "Outlet Management")
-     * @param subMenu          - Sub menu name to be clicked (e.g., "Outlets")
-     * @param searchOutletName - Outlet name to search (e.g., "Madhuloka liquor")
-     * @param filter           - Filter value to select (e.g., "Today")
-     *
-     * Example Usage:
-     * outletMenuAndSubMenu('Outlet Management', 'Outlets', 'Madhuloka liquor', 'Today');
-     *
-     * Main Menu    → Click "Outlet Management"
-     * Sub Menu     → Click "Outlets"
-     * Collect Data → Fetch all outlet names, external IDs, created dates from all pages
-     * Search       → Find outlet name in collected data
-     * Filter       → Select date filter from dropdown
-     * Navigate     → Click outlet name to go to outlet details
-     */
-    async outletManagementPage(menu:string,subMenu:string,searchOutletName:string,filter:string):Promise<string[]>{
+/**
+ * Function Name: getAllOutletNames
+ * Author: Lakshmi
+ * Created Date: 2026-06-03
+ *
+ * Description:
+ * This function navigates to the Outlet Management → Outlets page
+ * and retrieves all outlet details across multiple pages.
+ *
+ * Functionality:
+ * 1. Navigates to the required menu and submenu using reusable navigation method
+ * 2. Iterates through all paginated pages
+ * 3. Collects:
+ *    - Outlet Names
+ *    - External IDs
+ *    - Created Dates
+ * 4. Continues fetching data until the "Next" button is disabled
+ * 5. Logs all collected outlet details in a structured format
+ * 6. Returns the complete list of outlet names
+ *
+ * Parameters:
+ * @param menu    - Main menu name (e.g., "Outlet Management")
+ * @param subMenu - Submenu name (e.g., "Outlets")
+ *
+ * Returns:
+ * @returns Promise<string[]> - Array of all outlet names collected from all pages
+ *
+ * Example Usage:
+ * const outlets = await getAllOutletNames('Outlet Management', 'Outlets');
+ *
+ * Notes:
+ * - Assumes pagination is controlled using a "Next" button
+ * - Data is fetched page by page until no more pages are available
+ */
+    async getAllOutletNames(menu:string,subMenu:string):Promise<string[]>{
      await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
      const allOutletNames:string[]=[];
      const allExternalId:string[]=[];
@@ -156,46 +142,50 @@ export class OutletPage{
          for(let i=0;i<allOutletNames.length;i++){
             console.log(`${i+1}.${allOutletNames[i]}-------External ID:${allExternalId[i]}------${allCreatedDate[i]}`);
          }
-        
-        const foundOutlet = allOutletNames.find((name: string) => name.trim() === searchOutletName);
-        if (foundOutlet) {
-        console.log(`Outlet found: ${foundOutlet}`);
-        await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
-        await this.page.locator(this.filterDate).click();
-        const options = await this.page.locator(this.selectOptions).allTextContents();
-        console.log(options);
-        let filterFound  = false;
-     // Loop through dropdown options to find matching filter
-     for (const item of options) {
-             if (item.trim() === filter) {
-              try {
-                    await this.page.locator(this.filterDate).selectOption({ label: filter });
-                    console.log(`Filter "${item}" was successfully selected from the dropdown.`);
-                    filterFound = true;
-                    break;
-    
-                } catch (error) 
-                {
-                    console.log(`Error while clicking ${item}:`, error);
-                }
-       
-           }
-        }
-// If filter not found
-if (!filterFound) {
-  console.log(`Filter "${filter}" not available in dropdown.`);
-}
-
-await this.page.locator(this.outletNameText).click();
-return allOutletNames;
-}
-else {
-        //Outlet not found
-        console.log(`Outlet "${searchOutletName}" not found in ${allOutletNames.length} outlets`);
-        return [];
+         return allOutletNames;
     }
-}
-}
+        }
+        
+        
+//         const foundOutlet = allOutletNames.find((name: string) => name.trim() === searchOutletName);
+//         if (foundOutlet) {
+//         console.log(`Outlet found: ${foundOutlet}`);
+//         await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
+//         await this.page.locator(this.filterDate).click();
+//         const options = await this.page.locator(this.selectOptions).allTextContents();
+//         console.log(options);
+//         let filterFound  = false;
+//      // Loop through dropdown options to find matching filter
+//      for (const item of options) {
+//              if (item.trim() === filter) {
+//               try {
+//                     await this.page.locator(this.filterDate).selectOption({ label: filter });
+//                     console.log(`Filter "${item}" was successfully selected from the dropdown.`);
+//                     filterFound = true;
+//                     break;
+    
+//                 } catch (error) 
+//                 {
+//                     console.log(`Error while clicking ${item}:`, error);
+//                 }
+       
+//            }
+//         }
+// // If filter not found
+// if (!filterFound) {
+//   console.log(`Filter "${filter}" not available in dropdown.`);
+// }
+
+// await this.page.locator(this.outletNameText).click();
+// return allOutletNames;
+// }
+// else {
+//         //Outlet not found
+//         console.log(`Outlet "${searchOutletName}" not found in ${allOutletNames.length} outlets`);
+//         return [];
+//     }
+// }
+// }
 
 
 
