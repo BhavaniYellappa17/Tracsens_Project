@@ -1,7 +1,35 @@
 
-  {
-  "username": "alex",
-  "password": "password123"
+ {
+  "validLogin": {
+    "username": "alex",
+    "password": "password123"
+  },
+  "invalidLogin": [
+    {
+      "testCase": "Invalid password",
+      "username": "alex",
+      "password": "wrongPassword"
+    },
+    {
+      "testCase": "Invalid username",
+      "username": "wrongUser",
+      "password": "password123"
+    },
+    {
+      "testCase": "Empty username",
+      "username": "",
+      "password": "password123"
+    },
+    {
+      "testCase": "Empty password",
+      "username": "alex",
+      "password": ""
+    },
+    {
+      "testCase": "Both fields empty",
+      "username": "",
+      "password": ""
+    }
+  ]
 }
- 
 

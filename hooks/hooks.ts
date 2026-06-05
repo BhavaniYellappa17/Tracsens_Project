@@ -176,8 +176,8 @@ test.beforeEach(async ({ page, browserName }) => {
 
     // -------------------- LOGIN SECTION --------------------
 
-    console.log(`Step 2: Logging in with username: "${loginData.username}"`);
-    await loginPage.loginToApplicationT(loginData.username, loginData.password);
+    console.log(`Step 2: Logging in with username: "${loginData.validLogin}"`);
+    await loginPage.loginToApplicationT(loginData.validLogin.username, loginData.validLogin.password);
     console.log("✅ Login complete — test starting");
 
     console.log("=== BEFORE EACH: Setup END ===");

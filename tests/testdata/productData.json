@@ -1,12 +1,78 @@
 [
-{
-"menu": "Product Management",
-"ProductSubMenu": "Products",
-"sproductName": "BLUEEEEEE GRAPEE BRANDYYYYYY",
-"sdetailedDescription": "BLUEE GRAPE BRANDY",
-"sstockKeepingUnit": "BLUEE_GRAPE_BRANDY_294ML",
-"sstandardPrice" : "17010",
-"editProdName" : "BLUEEEE GRAPEE BRANDYYY"
-
-}
+  {
+    "menu": "Product Management",
+    "ProductSubMenu": "Products",
+    "imagePath": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png",
+    "sproductName": "BLUEEEEEE GRAPEE BRANDYYYYYY",
+    "sdetailedDescription": "BLUEE GRAPE BRANDY",
+    "sstockKeepingUnit": "BLUEE_GRAPE_BRANDY_294ML",
+    "sstandardPrice": "17010",
+    "editProdName": "BLUEEEE GRAPEE BRANDYYY",
+    "negativeProduct": [
+      {
+        "testCase": "Empty product name",
+        "sproductName": "",
+        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+      },
+      {
+        "testCase": "Empty SKU",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+      },
+      {
+        "testCase": "Empty price",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstandardPrice": "",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+      },
+      {
+        "testCase": "Negative price",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstandardPrice": "-100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+      },
+      {
+        "testCase": "Price with letters",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstandardPrice": "abc",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+      },
+      {
+        "testCase": "Duplicate SKU",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "BLUEE_GRAPE_BRANDY_294ML",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+      },
+      {
+        "testCase": "Invalid image type xlsx",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_002",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "C:\\Users\\bhavani\\Downloads\\Tracsens_TestScenarios 4.xlsx"
+      },
+      {
+        "testCase": "No image uploaded",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_002",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": ""
+      }
+    ]
+  }
 ]

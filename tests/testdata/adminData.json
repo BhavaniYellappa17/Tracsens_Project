@@ -1,20 +1,87 @@
-  [
+[
   {
     "menu": "Administration",
     "customerSubMenu": "Customers",
-    "UserSubMenu" : "Users",
-    "customerName": "Kevin Thomas",
-    "customerEmail": "Kevin4444@gmail.com",
-    "customerPhone": "8776543188",
-    "customerVerifyName": "Kevin Thomas",
-    "editcustomerName": "Kevinn",
-    "userSearch": "Kevin Thomas",
-     "userFullName" : "Kevin Adams",
-     "userName" : "kevinn",
-     "userPassword" : "Sweetyyyyy@12345",
-     "userVerifyName" : "Kevin Thomas",
-     "editUserName": "Kevin ThomasPPP"
+    "UserSubMenu": "Users",
+    "customerName": "Theo Simmons",
+    "customerEmail": "Simmons11@gmail.com",
+    "customerPhone": "8776543175",
+    "customerVerifyName": "Theo Simmons",
+    "editcustomerName": "Simmons",
+    "userSearch": "Theo Simmons",
+    "userFullName": "Theo Simmons",
+    "userName": "simmons",
+    "userPassword": "TheoSimmonst@12345",
+    "userVerifyName": "Theo Simmons",
+    "editUserName": "Theo SimmonsPPP",
+    
+    "negativeCustomer": [
+      {
+        "testCase": "Empty customer name",
+        "customerName": "",
+        "customerEmail": "Empty@gmail.com",
+        "customerPhone": "9876543210",
+        "imagePath": "C:\\Users\\bhavani\\Downloads\\abstract-company-logo_53876-120501.png"
+      },
+      {
+        "testCase": "Empty email",
+        "customerName": "DavidMil",
+        "customerEmail": "",
+        "customerPhone": "9876543210",
+        "imagePath": "C:\\Users\\bhavani\\Downloads\\abstract-company-logo_53876-120501.png"
+      },
+      {
+        "testCase": "Invalid email format",
+        "customerName": "DavidMil",
+        "customerEmail": "DavidMilEmailgmail.com",
+        "customerPhone": "9876543210",
+        "imagePath": "C:\\Users\\bhavani\\Downloads\\abstract-company-logo_53876-120501.png"
+      },
+      {
+        "testCase": "Phone more than 10 digits",
+        "customerName": "DavidMil",
+        "customerEmail": "DavidMil@gmail.com",
+        "customerPhone": "123456789011",
+        "imagePath": ""
+      }
+    ],
+      
+       "negativeUser": [
+      {
+        "testCase": "Empty all fields",
+        "fullName": "",
+        "Email": "",
+        "userName": "",
+        "password": "a"
+      },
+      {
+        "testCase": "Empty full name",
+        "fullName": "",
+        "Email": "test@gmail.com",
+        "userName": "testuser",
+        "password": "Pass@123"
+      },
+      {
+        "testCase": "Invalid email format",
+        "fullName": "Test User",
+        "Email": "invalidemail",
+        "userName": "testuser",
+        "password": "Pass@123"
+      },
+      {
+        "testCase": "Empty username",
+        "fullName": "Test User",
+        "Email": "test@gmail.com",
+        "userName": "",
+        "password": "Pass@123"
+      },
+      {
+        "testCase": "Weak password",
+        "fullName": "Test User",
+        "Email": "test@gmail.com",
+        "userName": "testuser",
+        "password": "123"
+      }
+    ]
   }
-  ]
-  
-
+]
