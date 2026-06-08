@@ -81,25 +81,27 @@ test.describe('Negative Login Tests', () => {
             console.log('✅ Assert 2 passed: Login page loaded — logo is visible');
 
             // -------------------- STEP 3: Fill Username --------------------
+                console.log(`Step 3: Filling username with: "${data.username}"`);
 
-            // Fill the username input field with test data (may be empty for negative cases)
-            console.log(`Step 3: Filling username with: "${data.username}"`);
-            await page.locator('//input[@type="text"]').fill(data.username);
+                const usernameField = page.locator('//input[@type="text"]');
+                await usernameField.waitFor({ state: 'visible', timeout: 10000 }); // ✅ wait for field
+                await usernameField.fill(data.username);
+                await expect(usernameField).toHaveValue(data.username);
+                console.log(`✅ Assert 3 passed: Username field value is "${data.username}"`);
 
-            // ✅ Assert 3: Verify username field has the expected value
-            await expect(page.locator('//input[@type="text"]')).toHaveValue(data.username);
-            console.log(`✅ Assert 3 passed: Username field value is "${data.username}"`);
+                // -------------------- STEP 4: Fill Password --------------------
+                console.log(`Step 4: Filling password with: "${data.password}"`);
 
-            // -------------------- STEP 4: Fill Password --------------------
+                const passwordField = page.locator('//input[@type="password"]');
+                await passwordField.waitFor({ state: 'visible', timeout: 10000 }); // ✅ wait for field
+                await passwordField.fill(data.password);
+                await expect(passwordField).toHaveValue(data.password);
+                console.log(`✅ Assert 4 passed: Password field value is "${data.password}"`);
 
-            // Fill the password input field with test data (may be empty for negative cases)
-            console.log(`Step 4: Filling password with: "${data.password}"`);
-            await page.locator('//input[@type="password"]').fill(data.password);
-
-            // ✅ Assert 4: Verify password field has the expected value
-            await expect( page.locator('//input[@type="password"]')).toHaveValue(data.password);
-            console.log(`✅ Assert 4 passed: Password field value is "${data.password}"`);
-
+                // ✅ Assert 4: Verify password field has the expected value
+                await expect( page.locator('//input[@type="password"]')).toHaveValue(data.password);
+                console.log(`✅ Assert 4 passed: Password field value is "${data.password}"`);
+            
             // -------------------- STEP 5: Click Sign In --------------------
 
             // Click the Sign In button to trigger validation or login attempt

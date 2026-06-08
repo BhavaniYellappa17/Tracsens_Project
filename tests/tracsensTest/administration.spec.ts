@@ -13,6 +13,7 @@
 
 import { test, expect } from '@playwright/test';
 import '../../hooks/hooks';
+import path from 'path';
 import { adminCustomerPage } from '../../pages/Tracsens/adminCustomerPage';
 import { adminUserPage } from '../../pages/Tracsens/adminUserPage';
 import adminData from '../testdata/adminData.json';
@@ -67,7 +68,7 @@ test.describe('Positive - Admin Customer Tests', () => {
                     data.customerSubMenu!
                 );
                 // ✅ Assert: Customer table visible after creation
-                await expect(page.locator(adminCustomer.customerNameTableFirstRow)) .toBeVisible({ timeout: 15000 });
+                await expect(page.locator(adminCustomer.customerNameTableFirstRow)).toBeVisible({ timeout: 15000 });
                 console.log("✅ Assert passed: Customer table visible after creation");
 
                 // ── STEP 2: Verify Customer ──
@@ -80,7 +81,7 @@ test.describe('Positive - Admin Customer Tests', () => {
 
                 // ── STEP 3: Edit Customer ──
                 console.log(`\nStep 3: Editing "${data.customerName}" → "${data.editcustomerName}"`);
-                await adminCustomer.editAndVerifyCustomerName(data.editcustomerName!,data.customerName!);
+                await adminCustomer.editAndVerifyCustomerName(data.editcustomerName!, data.customerName!);
 
                 // ✅ Assert 3a: New name visible
                 await expect(page.locator(`//span[text()='${data.editcustomerName}']`).first()).toBeVisible({ timeout: 10000 });
@@ -150,7 +151,16 @@ test.describe('Positive - Admin User Tests', () => {
 
                 // ── STEP 1: Create User ──
                 console.log(`\nStep 1: Creating user: "${data.userFullName}"`);
-                await adminUser.createUserAccountVerify(data.userSearch!,data.userFullName!,data.userName!,data.customerEmail!,data.userPassword!,data.userVerifyName!,data.menu!,data.UserSubMenu!);
+                await adminUser.createUserAccountVerify(
+                    data.userSearch!,
+                    data.userFullName!,
+                    data.userName!,
+                    data.customerEmail!,
+                    data.userPassword!,
+                    data.userVerifyName!,
+                    data.menu!,
+                    data.UserSubMenu!
+                );
                 // ✅ Assert 1: User table visible
                 await expect(page.locator(adminUser.UserTable)).toBeVisible({ timeout: 15000 });
                 console.log("✅ Assert passed: User table visible after creation");
@@ -161,7 +171,8 @@ test.describe('Positive - Admin User Tests', () => {
 
                 // ── STEP 2: Edit and Delete User ──
                 console.log(`\nStep 2: Editing "${data.userFullName}" → "${data.editUserName}"`);
-                await adminUser.editDeletUserName(data.editUserName!,data.userFullName!,data.userName!);
+                await adminUser.editDeletUserName(data.editUserName!, data.userFullName!, data.userName!);
+
                 // ✅ Assert 3: Edited user deleted and not found
                 await expect(page.locator(`//span[text()='${data.editUserName}']`)).toHaveCount(0);
                 console.log(`✅ Assert passed: User "${data.editUserName}" deleted`);
@@ -211,7 +222,7 @@ test.describe('Negative - Admin Customer Tests', () => {
 
             // ── STEP 1: Navigate ──
             console.log('Step 1: Navigating to Administration > Customers');
-            await adminCustomer.adminPage.adminMenuSubmenu(testData.menu,testData.customerSubMenu);
+            await adminCustomer.adminPage.adminMenuSubmenu(testData.menu, testData.customerSubMenu);
             await page.waitForLoadState('networkidle');
             console.log('✅ Navigated to Customers page');
 
@@ -233,15 +244,24 @@ test.describe('Negative - Admin Customer Tests', () => {
             await page.locator('//input[@id="modal-email"]').fill(negData.customerEmail);
             await page.locator('//input[@id="modal-phone"]').fill(negData.customerPhone);
 
-            // Upload logo only if imagePath is provided
+            // ── IMAGE UPLOAD ──
+            // Upload logo only if imagePath is provided in test data
+            // path.resolve() converts the relative path from JSON to an absolute path
+            // so it works correctly on any machine or CI environment
             if (negData.imagePath && negData.imagePath.trim() !== '') {
-                console.log(`ℹ️ Uploading logo: "${negData.imagePath}"`);
-                await page.locator('//input[@type="file"]').setInputFiles(negData.imagePath);
+
+                // ✅ Resolve relative path → absolute path at runtime
+                const resolvedImagePath = path.resolve(negData.imagePath);
+                console.log(`ℹ️ Uploading logo from: "${resolvedImagePath}"`);
+
+                await page.locator('//input[@type="file"]').setInputFiles(resolvedImagePath);
                 await page.waitForTimeout(1000);
-                console.log('✅ Logo uploaded');
+                console.log('✅ Logo uploaded successfully');
+
             } else {
-                console.log('ℹ️ No logo — skipping upload');
+                console.log('ℹ️ No imagePath provided — skipping image upload');
             }
+
             console.log('✅ Form filled with test data');
 
             // ── STEP 4: Submit ──
@@ -260,13 +280,13 @@ test.describe('Negative - Admin Customer Tests', () => {
                 console.log('✅ Assert passed: Modal still open — browser validation blocked submission');
 
             } else if (!negData.customerEmail.includes('@')) {
-                // Invalid email — browser blocks submission
+                // Invalid email format — browser blocks submission
                 console.log('ℹ️ Invalid email — verifying modal stays open');
                 await expect(page.locator('//h5[text()="Create customer"]')).toBeVisible({ timeout: 5000 });
                 console.log('✅ Assert passed: Modal still open — invalid email blocked submission');
 
             } else if (negData.customerPhone.length > 10) {
-                // Phone > 10 digits — app validation blocks submission
+                // Phone number exceeds 10 digits — app validation blocks submission
                 console.log('ℹ️ Phone > 10 digits — verifying modal stays open');
                 await expect(page.locator('//h5[text()="Create customer"]')).toBeVisible({ timeout: 5000 });
                 console.log('✅ Assert passed: Modal still open — phone validation blocked submission');
@@ -308,7 +328,7 @@ test.describe('Negative - Admin User Tests', () => {
 
             // ── STEP 1: Navigate ──
             console.log('Step 1: Navigating to Administration > Users');
-            await adminUser.adminPage.adminMenuSubmenu( testData.menu,testData.UserSubMenu);
+            await adminUser.adminPage.adminMenuSubmenu(testData.menu, testData.UserSubMenu);
             await page.waitForLoadState('networkidle');
             console.log('✅ Navigated to Users page');
 
@@ -334,7 +354,7 @@ test.describe('Negative - Admin User Tests', () => {
             await page.locator('[name="username"]').fill(negData.userName);
             await page.locator('[name="password"]').fill(negData.password);
 
-            // Trigger validation
+            // Trigger validation by pressing Tab to move focus away
             await page.keyboard.press('Tab');
             await page.waitForTimeout(500);
             console.log('✅ Form filled with invalid data');
@@ -342,7 +362,7 @@ test.describe('Negative - Admin User Tests', () => {
             // ── STEP 4: Verify Button Disabled ──
             console.log('Step 4: Verifying Add User button is disabled');
             const addUserBtn = page.getByRole('button', { name: 'Add User' });
-            // ✅ Assert: Button disabled due to invalid data
+            // ✅ Assert: Button disabled due to invalid/incomplete data
             await expect(addUserBtn).toBeDisabled({ timeout: 3000 });
             console.log('✅ Assert passed: Add User button disabled — validation working');
 
@@ -365,566 +385,3 @@ test.describe('Negative - Admin User Tests', () => {
         });
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// /**
-
-//  * @file adminTest.spec.ts
-//  * @author Bhavani
-//  * @date 2026-05-12
-//  * @description End-to-end test suite for Admin module covering:
-//  *  - Customer creation, edit, and deletion
-//  *  - User creation, edit, and deletion
-//  * Test data is driven from adminData.json to support multiple data sets.
-//  * Page Object Model (POM) pattern is used for all interactions.
-//  *
-//  * @testFile adminData.json - Contains array of customer and user test data records
-//  * @dependencies
-//  *  - AdminPage         → handles sidebar menu navigation
-//  *  - adminCustomerPage → handles customer CRUD operations
-//  *  - adminUserPage     → handles user CRUD operations
-//  *  - hooks/hooks       → handles login and logout before/after each test
-//  */
-
-// import { test } from '@playwright/test';
-// import '../../hooks/hooks';
-// import { AdminPage } from '../../pages/Tracsens/adminPage';
-// import { adminCustomerPage } from '../../pages/Tracsens/adminCustomerPage';
-// import adminData from '../testdata/adminData.json';
-// import { adminUserPage } from '../../pages/Tracsens/adminUserPage';
-
-// // ==================== PAGE OBJECT INSTANCES ====================
-
-// // AdminPage instance — handles sidebar menu and submenu navigation
-// let adminPage: AdminPage;
-
-// // adminCustomerPage instance — handles customer create, edit, delete flows
-// let adminCustomer: adminCustomerPage;
-
-// // adminUserPage instance — handles user create, edit, delete flows
-// let adminUser: adminUserPage;
-
-// // ==================== TEST SUITE ====================
-
-// /**
-//  * @test Customer Lifecycle — Create, Verify, Edit, Delete
-//  * @description Data-driven test that loops through all records in adminData.json
-//  * and performs the complete customer lifecycle for each record:
-//  *  1. Creates a new customer if they don't already exist
-//  *  2. Verifies the customer appears in the table
-//  *  3. Edits the customer name and verifies the update
-//  *  4. Deletes the customer and verifies deletion
-//  *
-//  * @param page - Playwright Page object injected by the test runner
-//  * @timeout 60000ms — set to handle multiple data records with navigation waits
-//  *
-//  * @example
-//  * // Run this test using:
-//  * npx playwright test adminTest.spec.ts --grep "Customer Lifecycle"
-//  */
-// test('Customer Lifecycle — Create, Verify, Edit, Delete', async ({ page }) => {
-
-//     // Set test timeout to 60 seconds to accommodate navigation and wait times
-//     test.setTimeout(60000);
-
-//     console.log("=== CUSTOMER TEST SUITE START ===");
-//     console.log(`ℹ️ Total data records to process: ${adminData.length}`);
-
-//     try {
-
-//         // -------------------- INITIALIZATION SECTION --------------------
-
-//         // Initialize adminCustomerPage POM instance with the current page
-//         console.log("Initializing Page Object Model instances");
-//         adminCustomer = new adminCustomerPage(page);
-//         console.log("✅ adminCustomerPage instance created");
-
-//         // -------------------- DATA-DRIVEN LOOP SECTION --------------------
-
-//         // Loop through each test data record from adminData.json
-//         // Each record contains customer details for one complete create/edit/delete flow
-//         console.log("\nStarting data-driven loop through adminData records");
-
-//         for (const data of adminData) {
-
-//             console.log("\n========================================");
-//             console.log(`ℹ️ Processing record for: "${data.customerName}"`);
-//             console.log(`ℹ️ Customer Name    : "${data.customerName}"`);
-//             console.log(`ℹ️ Customer Email   : "${data.customerEmail}"`);
-//             console.log(`ℹ️ Customer Phone   : "${data.customerPhone}"`);
-//             console.log(`ℹ️ Edit Customer    : "${data.editcustomerName}"`);
-//             console.log(`ℹ️ Menu             : "${data.menu}"`);
-//             console.log(`ℹ️ Customer SubMenu : "${data.customerSubMenu}"`);
-//             console.log("========================================");
-
-//             // Step 1: Run complete customer lifecycle flow
-//             // Creates customer → verifies → edits → deletes
-//             console.log(`\nStep 1: Running customer flow for: "${data.customerName}"`);
-//             await adminCustomer.adminCreateVerifyCustomer(data.customerName!,       // Customer name to create
-//                 data.customerEmail!,      // Customer email address
-//                 data.customerPhone!,      // Customer phone number
-//                 data.customerVerifyName!, // Name to verify after creation
-//                 data.editcustomerName!,   // New name to set during edit
-//                 data.menu!,               // Top-level menu to navigate to
-//                 data.customerSubMenu! 
-//                     // Submenu to navigate to
-//             );
-//             console.log(`✅ Customer flow complete for: "${data.customerName}"`);
-
-//             console.log(`\n✅ Record processing complete for: "${data.customerName}"`);
-//         }
-
-//         console.log("\n✅ All customer records processed successfully");
-
-//     } catch (error) {
-
-//         // -------------------- ERROR HANDLING SECTION --------------------
-
-//         // Catch and log any errors that occur during test execution
-//         // Using instanceof check to safely access error message property
-//         if (error instanceof Error) {
-//             console.log(`❌ Test failed with error: ${error.message}`);
-//             console.log(`❌ Stack trace: ${error.stack}`);
-//         } else {
-//             console.log(`❌ Test failed with unknown error: ${error}`);
-//         }
-//     }
-
-//     console.log("=== CUSTOMER TEST SUITE END ===");
-// });
-
-
-// /**
-//  * @test User Lifecycle — Create, Verify, Edit, Delete
-//  * @description Data-driven test that loops through all records in adminData.json
-//  * and performs the complete user lifecycle for each record:
-//  *  1. Creates a new user linked to the customer
-//  *  2. Verifies the user appears in the table
-//  *  3. Edits the user name and verifies the update
-//  *  4. Deletes the user and verifies deletion
-//  *
-//  * @param page - Playwright Page object injected by the test runner
-//  * @timeout 60000ms — set to handle multiple data records with navigation waits
-//  *
-//  * @example
-//  * // Run this test using:
-//  * npx playwright test adminTest.spec.ts --grep "User Lifecycle"
-//  */
-// test('User Lifecycle — Create, Verify, Edit, Delete', async ({ page }) => {
-
-//     // Set test timeout to 60 seconds to accommodate navigation and wait times
-//     test.setTimeout(60000);
-
-//     console.log("=== USER TEST SUITE START ===");
-//     console.log(`ℹ️ Total data records to process: ${adminData.length}`);
-
-//     try {
-
-//         // -------------------- INITIALIZATION SECTION --------------------
-
-//         // Initialize adminUserPage POM instance with the current page
-//         console.log("Initializing Page Object Model instances");
-//         adminUser = new adminUserPage(page);
-//         console.log("✅ adminUserPage instance created");
-
-//         // -------------------- DATA-DRIVEN LOOP SECTION --------------------
-
-//         // Loop through each test data record from adminData.json
-//         // Each record contains user details for one complete create/edit/delete flow
-//         console.log("\nStarting data-driven loop through adminData records");
-
-//         for (const data of adminData) {
-
-//             console.log("\n========================================");
-//             console.log(`ℹ️ Processing record for: "${data.userFullName}"`);
-//             console.log(`ℹ️ User Full Name   : "${data.userFullName}"`);
-//             console.log(`ℹ️ Username         : "${data.userName}"`);
-//             console.log(`ℹ️ User Email       : "${data.customerEmail}"`);
-//             console.log(`ℹ️ Edit User Name   : "${data.editUserName}"`);
-//             console.log(`ℹ️ Menu             : "${data.menu}"`);
-//             console.log(`ℹ️ User SubMenu     : "${data.UserSubMenu}"`);
-//             console.log("========================================");
-
-//             // Step 1: Run complete user lifecycle flow
-//             // Creates user → verifies → edits → deletes
-//             console.log(`\nStep 1: Running user flow for: "${data.userFullName}"`);
-//             await adminUser.adminCreateVerifyEditDeleteUser(
-//                 data.userSearch!,      // Name to search before creating (duplicate check)
-//                 data.userFullName!,    // Full name for the new user
-//                 data.userName!,        // Username for the new user
-//                 data.customerEmail!,   // Email address for the new user
-//                 data.userPassword!,    // Password for the new user
-//                 data.userVerifyName!,  // Name to verify after creation
-//                 data.editUserName!,    // New name to set during edit
-//                 data.menu!,            // Top-level menu to navigate to
-//                 data.UserSubMenu!      // Submenu to navigate to
-//             );
-//             console.log(`✅ User flow complete for: "${data.userFullName}"`);
-
-//             console.log(`\n✅ Record processing complete for: "${data.userFullName}"`);
-//         }
-
-//         console.log("\n✅ All user records processed successfully");
-
-//     } catch (error) {
-
-//         // -------------------- ERROR HANDLING SECTION --------------------
-
-//         // Catch and log any errors that occur during test execution
-//         // Using instanceof check to safely access error message property
-//         if (error instanceof Error) {
-//             console.log(`❌ Test failed with error: ${error.message}`);
-//             console.log(`❌ Stack trace: ${error.stack}`);
-//         } else {
-//             console.log(`❌ Test failed with unknown error: ${error}`);
-//         }
-//     }
-
-//     console.log("=== USER TEST SUITE END ===");
-// });
-
-
-
-
-
-
-
-// /**
-//  * @file administration.spec.ts
-//  * @author Bhavani
-//  * @date 2026-05-12
-//  * @description End-to-end test suite for Admin module covering:
-//  *  - Customer creation, edit, and deletion
-//  *  - User creation, edit, and deletion
-//  * Test data is driven from adminData.json to support multiple data sets.
-//  * Page Object Model (POM) pattern is used for all interactions.
-//  *
-//  * @testFile adminData.json - Contains array of customer and user test data records
-//  * @dependencies
-//  *  - AdminPage         → handles sidebar menu navigation
-//  *  - adminCustomerPage → handles customer CRUD operations
-//  *  - adminUserPage     → handles user CRUD operations
-//  *  - hooks/hooks       → handles login and logout before/after each test
-//  */
-
-// import { test, expect } from '@playwright/test';
-// import '../../hooks/hooks';
-// import { AdminPage } from '../../pages/Tracsens/adminPage';
-// import { adminCustomerPage } from '../../pages/Tracsens/adminCustomerPage';
-// import adminData from '../testdata/adminData.json';
-// import { adminUserPage } from '../../pages/Tracsens/adminUserPage';
-
-// // ==================== PAGE OBJECT INSTANCES ====================
-
-// let adminPage: AdminPage;
-// let adminCustomer: adminCustomerPage;
-// let adminUser: adminUserPage;
-
-// // ==================== TEST SUITE ====================
-
-// test('Customer Lifecycle — Create, Verify, Edit, Delete', async ({ page }) => {
-
-//     test.setTimeout(60000);
-
-//     console.log("=== CUSTOMER TEST SUITE START ===");
-//     console.log(`ℹ️ Total data records to process: ${adminData.length}`);
-
-//     try {
-
-//         // -------------------- INITIALIZATION --------------------
-
-//         console.log("Initializing Page Object Model instances");
-//         adminCustomer = new adminCustomerPage(page);
-//         console.log("✅ adminCustomerPage instance created");
-
-//         // -------------------- DATA-DRIVEN LOOP --------------------
-
-//         console.log("\nStarting data-driven loop through adminData records");
-
-//         for (const data of adminData) {
-
-//             console.log("\n========================================");
-//             console.log(`ℹ️ Processing record for: "${data.customerName}"`);
-//             console.log(`ℹ️ Customer Name    : "${data.customerName}"`);
-//             console.log(`ℹ️ Customer Email   : "${data.customerEmail}"`);
-//             console.log(`ℹ️ Customer Phone   : "${data.customerPhone}"`);
-//             console.log(`ℹ️ Edit Customer    : "${data.editcustomerName}"`);
-//             console.log(`ℹ️ Menu             : "${data.menu}"`);
-//             console.log(`ℹ️ Customer SubMenu : "${data.customerSubMenu}"`);
-//             console.log("========================================");
-
-//             // ── STEP 1: Create Customer ──
-//             console.log(`\nStep 1: Creating customer: "${data.customerName}"`);
-//             await adminCustomer.createCustomerPage(
-//                 data.customerName!,
-//                 data.customerEmail!,
-//                 data.customerPhone!,
-//                 data.menu!,
-//                 data.customerSubMenu!
-//             );
-
-//             // ✅ Assert 1: Success message was shown and page reloaded (customer table visible)
-//             await expect(page.locator(adminCustomer.customerNameTableFirstRow))
-//                 .toBeVisible({ timeout: 15000 });
-//             console.log("✅ Assert 1 passed: Customer table is visible after creation");
-
-//             // ── STEP 2: Verify Customer ──
-//             console.log(`\nStep 2: Verifying customer: "${data.customerVerifyName}"`);
-//             await adminCustomer.verifyCustomerName(data.customerVerifyName!);
-
-//             // ✅ Assert 2: Customer name span is visible in table
-//             await expect(
-//                 page.locator(`//span[text()='${data.customerVerifyName}']`).first()
-//             ).toBeVisible({ timeout: 10000 });
-//             console.log(`✅ Assert 2 passed: Customer "${data.customerVerifyName}" is visible in table`);
-
-//             // ── STEP 3: Edit Customer ──
-//             console.log(`\nStep 3: Editing customer "${data.customerName}" → "${data.editcustomerName}"`);
-//             await adminCustomer.editAndVerifyCustomerName(
-//                 data.editcustomerName!,
-//                 data.customerName!
-//             );
-
-//             // ✅ Assert 3a: Edited name is visible in table
-//             await expect(
-//                 page.locator(`//span[text()='${data.editcustomerName}']`).first()
-//             ).toBeVisible({ timeout: 10000 });
-//             console.log(`✅ Assert 3a passed: Edited name "${data.editcustomerName}" is visible`);
-
-//             // ✅ Assert 3b: Old name no longer visible in table
-//             await expect(
-//                 page.locator(`//span[text()='${data.customerName}']`)
-//             ).toHaveCount(0);
-//             console.log(`✅ Assert 3b passed: Old name "${data.customerName}" is no longer visible`);
-
-//             // ── STEP 4: Delete Customer ──
-//             console.log(`\nStep 4: Deleting customer: "${data.editcustomerName}"`);
-//             await adminCustomer.DeleteCustomerVerification(data.editcustomerName!);
-
-//             // ✅ Assert 4: Deleted customer no longer visible in table
-//             await expect(
-//                 page.locator(`//span[text()='${data.editcustomerName}']`)
-//             ).toHaveCount(0);
-//             console.log(`✅ Assert 4 passed: Customer "${data.editcustomerName}" is deleted and not found`);
-
-//             console.log(`\n✅ All assertions passed for record: "${data.customerName}"`);
-//         }
-
-//         console.log("\n✅ All customer records processed successfully");
-
-//     } catch (error) {
-
-//         if (error instanceof Error) {
-//             console.log(`❌ Test failed with error: ${error.message}`);
-//             console.log(`❌ Stack trace: ${error.stack}`);
-//         } else {
-//             console.log(`❌ Test failed with unknown error: ${error}`);
-//         }
-
-//         throw error; // ← Re-throw so Playwright marks test as FAILED
-//     }
-
-//     console.log("=== CUSTOMER TEST SUITE END ===");
-// });
-
-
-// test('User Lifecycle — Create, Verify, Edit, Delete', async ({ page }) => {
-
-//     test.setTimeout(60000);
-
-//     console.log("=== USER TEST SUITE START ===");
-//     console.log(`ℹ️ Total data records to process: ${adminData.length}`);
-
-//     try {
-
-//         // -------------------- INITIALIZATION --------------------
-
-//         console.log("Initializing Page Object Model instances");
-//         adminUser = new adminUserPage(page);
-//         console.log("✅ adminUserPage instance created");
-
-//         // -------------------- DATA-DRIVEN LOOP --------------------
-
-//         console.log("\nStarting data-driven loop through adminData records");
-
-//         for (const data of adminData) {
-
-//             console.log("\n========================================");
-//             console.log(`ℹ️ Processing record for: "${data.userFullName}"`);
-//             console.log(`ℹ️ User Full Name   : "${data.userFullName}"`);
-//             console.log(`ℹ️ Username         : "${data.userName}"`);
-//             console.log(`ℹ️ User Email       : "${data.customerEmail}"`);
-//             console.log(`ℹ️ Edit User Name   : "${data.editUserName}"`);
-//             console.log(`ℹ️ Menu             : "${data.menu}"`);
-//             console.log(`ℹ️ User SubMenu     : "${data.UserSubMenu}"`);
-//             console.log("========================================");
-
-//             // ── STEP 1: Create User ──
-//             console.log(`\nStep 1: Creating user: "${data.userFullName}"`);
-//             await adminUser.createUserAccountVerify(
-//                 data.userSearch!,
-//                 data.userFullName!,
-//                 data.userName!,
-//                 data.customerEmail!,
-//                 data.userPassword!,
-//                 data.userVerifyName!,
-//                 data.menu!,
-//                 data.UserSubMenu!
-//             );
-
-//             // ✅ Assert 1: User table is visible after creation
-//             await expect(page.locator(adminUser.UserTable))
-//                 .toBeVisible({ timeout: 15000 });
-//             console.log("✅ Assert 1 passed: User table is visible after creation");
-
-//             // ✅ Assert 2: Created user name is visible in table
-//             await expect(
-//                 page.locator(`//span[text()='${data.userVerifyName}']`).first()
-//             ).toBeVisible({ timeout: 10000 });
-//             console.log(`✅ Assert 2 passed: User "${data.userVerifyName}" is visible in table`);
-
-//             // ── STEP 2: Edit and Delete User ──
-//             console.log(`\nStep 2: Editing user "${data.userFullName}" → "${data.editUserName}"`);
-//             await adminUser.editDeletUserName(
-//                 data.editUserName!,
-//                 data.userFullName!,
-//                 data.userName!
-//             );
-
-//             // ✅ Assert 3: Edited user name was visible (edit succeeded) and then deleted
-//             // After deletion and page reload, the edited name should NOT be in the table
-//             await expect(
-//                 page.locator(`//span[text()='${data.editUserName}']`)
-//             ).toHaveCount(0);
-//             console.log(`✅ Assert 3 passed: User "${data.editUserName}" deleted and not found in table`);
-
-//             // ✅ Assert 4: Original user name also not visible (fully cleaned up)
-//             await expect(
-//                 page.locator(`//span[text()='${data.userFullName}']`)
-//             ).toHaveCount(0);
-//             console.log(`✅ Assert 4 passed: Original user "${data.userFullName}" not found in table`);
-
-//             console.log(`\n✅ All assertions passed for record: "${data.userFullName}"`);
-//         }
-
-//         console.log("\n✅ All user records processed successfully");
-
-//     } catch (error) {
-
-//         if (error instanceof Error) {
-//             console.log(`❌ Test failed with error: ${error.message}`);
-//             console.log(`❌ Stack trace: ${error.stack}`);
-//         } else {
-//             console.log(`❌ Test failed with unknown error: ${error}`);
-//         }
-
-//         throw error; // ← Re-throw so Playwright marks test as FAILED
-//     }
-
-//     console.log("=== USER TEST SUITE END ===");
-// });

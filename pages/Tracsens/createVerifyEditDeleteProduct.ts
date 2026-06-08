@@ -340,7 +340,7 @@ export class productManagement {
         sstockKeepingUnit: string,
         sstandardPrice: string,
         editProdName: string,
-        imagePath: string,      // ✅ imagePath parameter added
+        imagePath: string,      
         menu: string,
         subMenu: string
     ): Promise<void> {
@@ -359,7 +359,7 @@ export class productManagement {
             sdetailedDescription,
             sstockKeepingUnit,
             sstandardPrice,
-            imagePath,      // ✅ passed here
+            imagePath,      
             menu,
             subMenu
         );
@@ -371,7 +371,7 @@ export class productManagement {
             editProdName,
             sproductName,
             sstandardPrice
-            // ✅ No imagePath needed for edit
+            
         );
         console.log("✅ Product edit and deletion step complete");
 

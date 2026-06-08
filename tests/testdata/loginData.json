@@ -12,7 +12,7 @@
     },
     {
       "testCase": "Invalid username",
-      "username": "wrongUser",
+      "username": "david",
       "password": "password123"
     },
     {
