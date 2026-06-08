@@ -1,5 +1,6 @@
 import { Page,expect } from "@playwright/test";
 import { OutletMenuNav } from "../outletMenuNavigation";
+
 // Used to read files, check if file exists, get file details
 import * as fs from 'fs';
 // Used to join folder paths correctly for any OS
@@ -13,9 +14,11 @@ export class DashboardPage{
      * Reused from outletMenuNavigation.ts to avoid code duplication
      */
   outletMenuNav: OutletMenuNav;
+  
     constructor(public page:Page){
       //Reuse OutletMenuNav for sidebar navigation
         this.outletMenuNav = new OutletMenuNav(page);
+        
     }
 
     //**************Locators ****************/
@@ -25,26 +28,23 @@ export class DashboardPage{
 
      // Submenu items under OutletManagement (Outlets)
      outletSubMenu='(//a/span[@class="lan-5"])[1]';
-
-     //Outlet name link to click and navigate to outlet details
-     outletNameText='//a[@class="outlet-name-text mb-1"]';
-
-    //Outlet name heading on outlet information page
-    outletName='//h2[@class="outlet-name-heading mb-0 fw-black text-dark"]';
-
-    //Outlet Management page header (used for validation)
+     
+     //Outlet Management page header (used for validation)
      outletMngPage='//h1[text()="Outlet Management"]';
 
      //Search input field for outlet name
      searchByOutletNames='//input[@placeholder="Search by name, external id, or location..."]';
 
      //Created date filter dropdown
-     filterDate='//select[@class="input-created-filter-type form-select"]';
+     filter='//select[@class="input-created-filter-type form-select"]';
 
      //All dropdown options under created date filter
      selectOptions='//select[@class="input-created-filter-type form-select"]/option';
 
-    //AuditsLink
+     //Outlet name link to click and navigate to outlet details
+     outletNameText='//a[@class="outlet-name-text mb-1"]';
+
+     //AuditsLink
      audits='(//span[@class="tab-label"])[2]';
 
     //Each row in the Audit ID table
@@ -80,6 +80,9 @@ export class DashboardPage{
 
     //Close button to close the dashboard modal
     close='//button[@aria-label="Close"]';
+
+    //Audit Id Column Header(used for validation) 
+    verifyAuditId='//div[text()="Audit ID"]';
 
     /**
      * Function Name: getDashboardValues
@@ -137,35 +140,27 @@ export class DashboardPage{
       //Reuse OutletMenuNav to navigate to Outlet Management page
         //This handles sidebar menu click and submenu click internally
       await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
-      
       await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
-        await this.page.locator(this.filterDate).click();
+        await this.page.locator(this.filter).click();
         const options = await this.page.locator(this.selectOptions).allTextContents();
         console.log(options);
-        let filterFound  = false;
-     // Loop through dropdown options to find matching filter
-     for (const item of options) {
-             if (item.trim() === filter) {
-              try {
-                    await this.page.locator(this.filterDate).selectOption({ label: filter });
-                    console.log(`Filter "${item}" was successfully selected from the dropdown.`);
-                    filterFound = true;
-                    break;
-    
-                } catch (error) 
-                {
-                    console.log(`Error while clicking ${item}:`, error);
-                }
-       
-           }
-        }
-// If filter not found
-if (!filterFound) {
-  console.log(`Filter "${filter}" not available in dropdown.`);
+        await this.page.locator(this.filter).selectOption({ label: filter });
+       // Get all outlet names after search
+       const results = await this.page.locator(this.outletNameText).allTextContents();
+
+// Check if searched outlet exists
+const match = results.find(name =>name.trim().toLowerCase() === searchOutletName.trim().toLowerCase());
+if (match) {
+    console.log(`Outlet found: ${match}`);
+
+    // Click exact matching outlet
+    await this.page.locator(`//a[text()='${match}']`).click();
+
+} else {
+    console.log(`Outlet "${searchOutletName}" not found`);
 }
-        await this.page.locator(this.outletNameText).click();  
-        
-        await this.page.locator(this.audits).click();
+
+      await this.page.locator(this.audits).click();
         while (true) {
     // Get all rows on the current page
       

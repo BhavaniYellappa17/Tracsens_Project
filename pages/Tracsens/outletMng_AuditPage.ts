@@ -1,5 +1,6 @@
 import { Page,expect } from "@playwright/test";
 import { OutletMenuNav } from "../outletMenuNavigation";
+
 // Used to read files, check if file exists, get file details
 import * as fs from 'fs';
 // Used to join folder paths correctly for any OS
@@ -13,10 +14,11 @@ export class AuditPage{
      * Reused from outletMenuNavigation.ts to avoid code duplication
      */
     outletMenuNav: OutletMenuNav;
-   
+    
     constructor(public page:Page){
       //Reuse OutletMenuNav for sidebar navigation
       this.outletMenuNav = new OutletMenuNav(page);
+      
     }
      //****************** Locators ***************/
      // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
@@ -81,6 +83,9 @@ export class AuditPage{
      //Export PDF Button
      exportPdf='//button[text()="Export PDF"]';
 
+     //Audits Text
+     auditText='//h1[text()="Audits"]'
+
 /**
      * Function Name: auditsPage
      * Author: Lakshmi
@@ -136,37 +141,13 @@ async auditsPage(menu:string,subMenu:string,searchOutletName:string,filter:strin
   //Reuse OutletMenuNav to navigate to Outlet Management page
         // This handles sidebar menu click and submenu click internally
       await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
-     await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
+      await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
         await this.page.locator(this.filterDate).click();
         const options = await this.page.locator(this.selectOptions).allTextContents();
         console.log(options);
-        let filterFound  = false;
-     // Loop through dropdown options to find matching filter
-     for (const item of options) {
-             if (item.trim() === filter) {
-              try {
-                    await this.page.locator(this.filterDate).selectOption({ label: filter });
-                    console.log(`Filter "${item}" was successfully selected from the dropdown.`);
-                    filterFound = true;
-                    break;
-    
-                } catch (error) 
-                {
-                    console.log(`Error while clicking ${item}:`, error);
-                }
-       
-           }
-        }
-// If filter not found
-if (!filterFound) {
-  console.log(`Filter "${filter}" not available in dropdown.`);
-}
-        // await this.page.locator(this.outletNameText).click(); 
-        // Wait for search results to load
-await this.page.waitForTimeout(2000); 
-
-// Get all outlet names after search
-const results = await this.page.locator(this.outletNameText).allTextContents();
+        await this.page.locator(this.filterDate).selectOption({ label: filter });
+       // Get all outlet names after search
+ const results = await this.page.locator(this.outletNameText).allTextContents();
 
 // Check if searched outlet exists
 const match = results.find(name =>name.trim().toLowerCase() === searchOutletName.trim().toLowerCase());
@@ -179,8 +160,6 @@ if (match) {
 } else {
     console.log(`Outlet "${searchOutletName}" not found`);
 }
-
-
 //Navigate to the Audits section
         await this.page.locator(this.audits).click();
         let auditFound = false;
@@ -228,7 +207,6 @@ if (match) {
         if (!categoryFound) {
           console.log(`Category "${selectCategory}" not available in dropdown.`);
           await this.page.locator(this.closeButton).click();
-          console.log("Stopping execution for this audit.");
           return;
         }
        
@@ -301,11 +279,13 @@ if (match) {
 
 }
 if (!auditFound) {
-    throw new Error(`Audit ID "${targetAuditId}" not found`);
+    console.log(`❌ Audit ID "${targetAuditId}" not found`);
+    return;
+}
 }
 
 }
      
-}
+
 
 

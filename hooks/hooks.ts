@@ -183,7 +183,7 @@ test.beforeEach(async ({ page, browserName }) => {
     console.log("=== BEFORE EACH: Setup END ===");
 });
 
-test.afterEach(async ({ page }, testInfo) => {
+test.afterEach(async ({ page },testInfo) => {
     console.log("=== AFTER EACH: Teardown START ===");
     console.log(`ℹ️ Test: "${testInfo.title}" | Status: "${testInfo.status}"`);
 

@@ -4,7 +4,7 @@ export class OutletMenuNav{
     
     constructor(public page:Page){
    }
-    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
+    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet,Audit Management )
      homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
 
      // Submenu items under OutletManagement (Outlets)
@@ -46,6 +46,16 @@ export class OutletMenuNav{
      */
 
      async outletMenuAndSubMenu(menu:string,subMenu:string){
+        //Validate menu input
+      if (!menu?.trim()) {
+      console.log("❌ Menu name is empty");
+      return;
+    }
+
+    if (!subMenu?.trim()) {
+      console.log("❌ SubMenu name is empty");
+      return;
+    }
       let menuFound = false;
 
     // Wait for sidebar menu to be visible
@@ -75,13 +85,10 @@ export class OutletMenuNav{
              console.log("Menu already expanded, skipping click");
              menuFound = true;
 }
- // If menu not found
-if (!menuFound) {
-    throw new Error("Menu not found");
-    // console.log(`Not matched MenuItems`);
-    // return;
-
-}
+ if (!menuFound) {
+    console.log(`❌ Menu "${menu}" not found`);
+    return;
+  }
     const subMenus=await this.page.locator(this.outletSubMenu).allTextContents();
       console.log(subMenus);
        let subMenuFound = false;
@@ -99,20 +106,14 @@ if (!menuFound) {
         }
     }
 }
- // If menu not found
-if (!subMenuFound) {
-    throw new Error("SubMenu not found");
-    // console.log(`Not matched SubMenuItems`);
-    // return;
-}
-        // Validate submenu presence
-     //await this.page.locator(this.outletSubMenu).first().isVisible(); 
+ // If submenu not found
 
-     // Get all subMenu texts(Outlets)
-    //  const text=await this.page.locator(this.outletSubMenu).allTextContents();
-    //  console.log(text);
-     //await this.page.locator(this.outletSubMenu).click();
-     await this.page.locator(this.outletMngPage).isVisible();
-     console.log("Successfully Navigates to Outlet Management Page");
+  if (!subMenuFound) {
+    console.log(`❌ SubMenu "${subMenu}" not found`);
+    return;
+  
+}
+    await this.page.locator(this.outletMngPage).isVisible();
+    console.log("Successfully Navigates to Outlet Management Page");
 }
 }

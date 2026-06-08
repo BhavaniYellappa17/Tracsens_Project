@@ -1,14 +1,17 @@
 import { Page,expect } from "@playwright/test";
 import { OutletMenuNav } from "../outletMenuNavigation";
+
 export class OutletInformationPage{
     /**
      * OutletMenuNav instance — handles sidebar menu and submenu navigation
      * Reused from outletMenuNavigation.ts to avoid code duplication
      */
     outletMenuNav: OutletMenuNav;
+    
   constructor(public page:Page){
     // Reuse OutletMenuNav for sidebar navigation
         this.outletMenuNav = new OutletMenuNav(page);
+        
     }
 
     //******************* Locators ******************/
@@ -69,6 +72,9 @@ export class OutletInformationPage{
 
     //Created Date
     createdDate='//div[contains(@class,"identity-updated-col")]//span';
+
+    //AuditsLink
+     audits='(//span[@class="tab-label"])[2]';
 /**
      * Function Name: outletInformation
      * Author: Lakshmi
@@ -116,29 +122,23 @@ export class OutletInformationPage{
         await this.page.locator(this.filterDate).click();
         const options = await this.page.locator(this.selectOptions).allTextContents();
         console.log(options);
-        let filterFound  = false;
-     // Loop through dropdown options to find matching filter
-     for (const item of options) {
-             if (item.trim() === filter) {
-              try {
-                    await this.page.locator(this.filterDate).selectOption({ label: filter });
-                    console.log(`Filter "${item}" was successfully selected from the dropdown.`);
-                    filterFound = true;
-                    break;
-    
-                } catch (error) 
-                {
-                    console.log(`Error while clicking ${item}:`, error);
-                }
-       
-           }
-        }
-// If filter not found
-if (!filterFound) {
-  console.log(`Filter "${filter}" not available in dropdown.`);
+        await this.page.locator(this.filterDate).selectOption({ label: filter });
+       // Get all outlet names after search
+       const results = await this.page.locator(this.outletNameText).allTextContents();
+
+// Check if searched outlet exists
+      const match = results.find(name =>name.trim().toLowerCase() === searchOutletName.trim().toLowerCase());
+      if (match) {
+      console.log(`Outlet found: ${match}`);
+
+    // Click exact matching outlet
+      await this.page.locator(`//a[text()='${match}']`).click();
+
+} else {
+    console.log(`Outlet "${searchOutletName}" not found`);
 }
-        await this.page.locator(this.outletNameText).click();  
-        
+
+
         await this.page.locator(this.outletInformationLink).click();
         console.log("\n========== OUTLET INFORMATION ==========");
 

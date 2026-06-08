@@ -102,10 +102,10 @@
     "testCase": "Audit Page - Invalid Audit ID",
     "menu": "Outlet Management",
     "subMenu": "Outlets",
-    "searchOutletName": "Madhuloka liquor",
+    "searchOutletName": "Chirag Wines",
     "filter": "All time",
-    "targetAuditId": "AUD-1767761954121000000000",
-    "selectCategory": "All Categories"
+    "targetAuditId": "AUD-1774613948731-d6c2c68a",
+    "selectCategory": "7-LP_WHISKY"
   }, 
   {
     "testCase": "Audit Page - Filter by Specific Category",
