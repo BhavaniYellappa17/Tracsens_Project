@@ -1,11 +1,141 @@
-
+{
+  "menuAndSubMenuTestCases":[
   {
+    "testCase": "Valid Case",
+    "menu": "Outlet Management",
+    "subMenu": "Outlets"
+    
+  },
+  {
+    "testCase": "Invalid Menu Name",
+    "menu": "",
+    "subMenu": "Outlets"
+  },
+  {
+    "testCase": "Invalid SubMenu Name",
+    "menu": "Outlet Management",
+    "subMenu": "Audits"
+  }
+  
+],
+
+"getAllOutletNamesTestCases":[
+  {
+    "testCase": "Valid Case",
+    "menu": "Outlet Management",
+    "subMenu": "Outlets"
+    
+  }
+  
+],
+
+"searchoutletNameTestCase": [
+    {
+      "testCase": "Valid Search and Filter",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "Madhuloka liquor",
+      "filter": "All time"
+    },
+    {
+      "testCase": "Invalid Outlet Name",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "XYZ123Outlet",
+      "filter": "All time"
+    },
+    {
+      "testCase": "Empty Outlet Name",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "",
+      "filter": "All time"
+    },
+    {
+      "testCase": "Valid Outlet with Different Filter",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "Madhuloka liquor",
+      "filter": "Last month"
+    },
+    {
+      "testCase": "Invalid Filter",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "Madhuloka liquor",
+      "filter": "Last 7 Days"
+    }
+
+
+  ],
+  "outletInformationTestCase": [
+    {
+      "testCase": "Search Outlet with Valid Name and Filter",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "Madhuloka liquor",
+      "filter": "All time"
+    }
+  
+  ] ,
+  "auditPageTestCase": [
+    {
+      "testCase": "Audit Page Validation with Valid Search and Filters",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "Madhuloka liquor",
+      "filter": "All time",
+      "targetAuditId": "AUD-1767761954121-95a38e24",
+      "selectCategory": "All Categories"
+    },
+    
+  {
+    "testCase": "Audit Page -  empty AuditId",
     "menu": "Outlet Management",
     "subMenu": "Outlets",
-    "searchOutletName":"Madhuloka liquor",
-     "filter":"All time",
-     "targetAuditId":"AUD-1767761954121-95a38e24",
-     "selectCategory":"All Categories"
-
-
+    "searchOutletName": "Madhuloka liquor",
+    "filter": "All time",
+    "targetAuditId": "",
+    "selectCategory": "All Categories"
+  },
+  {
+    "testCase": "Audit Page - Invalid Audit ID",
+    "menu": "Outlet Management",
+    "subMenu": "Outlets",
+    "searchOutletName": "Chirag Wines",
+    "filter": "All time",
+    "targetAuditId": "AUD-1774613948731-d6c2c68a",
+    "selectCategory": "7-LP_WHISKY"
+  }, 
+  {
+    "testCase": "Audit Page - Filter by Specific Category",
+    "menu": "Outlet Management",
+    "subMenu": "Outlets",
+    "searchOutletName": "Madhuloka liquor",
+    "filter": "All time",
+    "targetAuditId": "AUD-1767761954121-95a38e24",
+    "selectCategory": "Beverages"
+  },
+  {
+    "testCase": "Audit Page - No Category Selected",
+    "menu": "Outlet Management",
+    "subMenu": "Outlets",
+    "searchOutletName": "Madhuloka liquor",
+    "filter": "All time",
+    "targetAuditId": "AUD-1767761954121-95a38e24",
+    "selectCategory": ""
   }
+  ],
+  "getDashboardValuesTestCase": [
+    {
+      "testCase": "Verify Dashboard Values for Valid Outlet Search with Filter, Audit ID and Category",
+      "menu": "Outlet Management",
+      "subMenu": "Outlets",
+      "searchOutletName": "Madhuloka liquor",
+      "filter": "All time",
+      "targetAuditId": "AUD-1767761954121-95a38e24",
+      "selectCategory": "All Categories"
+    }
+  ] 
+
+}

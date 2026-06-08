@@ -87,7 +87,16 @@ export default defineConfig({
         video: 'off',
         trace: 'on-first-retry',
         headless: false,
-        viewport: null,
+
+        // ✅ Set proper viewport
+        //viewport: { width: 1280, height: 720 },
+        viewport:null,
+
+        // ✅ Add navigation and action timeouts
+        // Without these, new context sits on about:blank indefinitely
+         navigationTimeout: 60000,
+         actionTimeout: 30000,
+
         launchOptions: {
             executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
             slowMo: 1000,

@@ -1,5 +1,6 @@
 import { Page,expect } from "@playwright/test";
-import { OutletPage } from "./outletManagement";
+import { OutletMenuNav } from "../outletMenuNavigation";
+
 // Used to read files, check if file exists, get file details
 import * as fs from 'fs';
 // Used to join folder paths correctly for any OS
@@ -8,15 +9,42 @@ import * as path from 'path';
 import * as os from 'os';
 
 export class DashboardPage{
-   outletPage:OutletPage;
-   
+  /**
+     * OutletMenuNav instance — handles sidebar menu and submenu navigation
+     * Reused from outletMenuNavigation.ts to avoid code duplication
+     */
+  outletMenuNav: OutletMenuNav;
+  
     constructor(public page:Page){
-        this.outletPage = new OutletPage(page);
+      //Reuse OutletMenuNav for sidebar navigation
+        this.outletMenuNav = new OutletMenuNav(page);
+        
     }
 
     //**************Locators ****************/
 
-    //AuditsLink
+    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
+     homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
+
+     // Submenu items under OutletManagement (Outlets)
+     outletSubMenu='(//a/span[@class="lan-5"])[1]';
+     
+     //Outlet Management page header (used for validation)
+     outletMngPage='//h1[text()="Outlet Management"]';
+
+     //Search input field for outlet name
+     searchByOutletNames='//input[@placeholder="Search by name, external id, or location..."]';
+
+     //Created date filter dropdown
+     filter='//select[@class="input-created-filter-type form-select"]';
+
+     //All dropdown options under created date filter
+     selectOptions='//select[@class="input-created-filter-type form-select"]/option';
+
+     //Outlet name link to click and navigate to outlet details
+     outletNameText='//a[@class="outlet-name-text mb-1"]';
+
+     //AuditsLink
      audits='(//span[@class="tab-label"])[2]';
 
     //Each row in the Audit ID table
@@ -52,56 +80,88 @@ export class DashboardPage{
 
     //Close button to close the dashboard modal
     close='//button[@aria-label="Close"]';
+
+    //Audit Id Column Header(used for validation) 
+    verifyAuditId='//div[text()="Audit ID"]';
+
     /**
      * Function Name: getDashboardValues
      * Author: Lakshmi
      * Created Date: 2026-05-26
-     * Description: This function searches for a specific Audit ID across all pages by:
-     * 1. Looping through all rows on the current page to find the matching Audit ID
-     * 2. Scrolling to the matched row and clicking the View Performance Dashboard button
-     * 3. If not found on current page, clicks Next button and repeats the search
+     * Description: This function performs complete dashboard page operations by:
      *
-     * After clicking View Dashboard button, this function fetches dashboard values by:
-     * 1. Fetching Unique SKUs count value
-     * 2. Fetching Detected SKUs count value
-     * 3. Waiting for diageo values to load
-     * 4. Fetching Unique SKUs diageo value
-     * 5. Fetching Detected SKUs diageo value
-     * 6. Fetching Retention Rate percentage value
+     * Navigation Steps:
+     * 1. Reuses OutletMenuNav to navigate to Outlet Management page
+     *    (handles sidebar menu and submenu clicks internally)
      *
-     * After fetching dashboard values, this function handles Missing SKUs by:
-     * 1. Fetching all missing SKU items
-     * 2. If no missing SKUs found → logs "No Missing SKUs found"
-     * 3. If missing SKUs found → logs count and list of missing SKUs
+     * Search and Filter Steps:
+     * 2. Fills search box with outlet name
+     * 3. Opens date filter dropdown and selects given filter
+     * 4. Clicks outlet name to navigate to outlet details page
+     * 5. Clicks Audits tab to navigate to audit section
      *
-     * After handling missing SKUs, this function exports and verifies PDF by:
-     * 1. Deleting old PDF files with same Audit ID from Downloads folder
-     * 2. Clicking Export PDF button and waiting for download
-     * 3. Saving the downloaded file to Downloads folder
-     * 4. Verifying the file name contains the Audit ID
-     * 5. Logging the file name and downloaded time
-     * 6. Closing the dashboard modal
+     * Audit Search Steps:
+     * 6. Loops through all rows on current page to find matching Audit ID
+     * 7. Scrolls to matched row and clicks View Performance Dashboard button
+     * 8. If not found on current page, checks if Next button is disabled
+     * 9. If Next is disabled logs Audit ID not found and stops
+     * 10. If Next is enabled clicks Next and repeats search
      *
-     * Parameters:
-     * @param targetAuditId - The Audit ID to search for (e.g., 'AUD-1767761954121-95a38e24')
+     * Dashboard Values Extraction Steps:
+     * 11. Fetches and logs Unique SKUs count value
+     * 12. Fetches and logs Detected SKUs count value
+     * 13. Waits for diageo values to fully load
+     * 14. Fetches and logs Unique SKUs diageo value
+     * 15. Fetches and logs Detected SKUs diageo value
+     * 16. Fetches and logs Retention Rate percentage value
+     *
+     * Missing SKUs Steps:
+     * 17. Fetches all missing SKU items
+     * 18. If no missing SKUs found logs "No Missing SKUs found"
+     * 19. If missing SKUs found logs count and complete list
+     *
+     * PDF Export Steps:
+     * 20. Deletes any existing PDF files for this Audit ID from Downloads folder
+     * 21. Clicks Export PDF button and waits for download event
+     * 22. Saves downloaded PDF to Downloads folder
+     * 23. Verifies PDF file exists with correct name and timestamp
+     * 24. Closes the dashboard modal after processing
+     *
+     * @param menu             - Main menu name to click (e.g., "Outlet Management")
+     * @param subMenu          - Sub menu name to click (e.g., "Outlets")
+     * @param searchOutletName - Outlet name to search (e.g., "Madhuloka liquor")
+     * @param filter           - Filter value to select (e.g., "All time")
+     * @param targetAuditId    - Audit ID to search for (e.g., "AUD-1767761954121-95a38e24")
      *
      * Example Usage:
-     * getDashboardValues('AUD-1767761954121-95a38e24');
-     *
-     * Search Row     → Find matching Audit ID across all pages
-     * View Dashboard → Click View Performance Dashboard button
-     * Unique SKUs    → Fetch Unique SKUs count and diageo value
-     * Detected SKUs  → Fetch Detected SKUs count and diageo value
-     * Retention Rate → Fetch Retention Rate percentage
-     * Missing SKUs   → Check and log missing SKUs
-     * Export PDF     → Delete old file, download and verify new PDF
-     * Close Modal    → Close the dashboard modal
+     * await getDashboardValues('Outlet Management', 'Outlets', 'Madhuloka liquor', 'All time', 'AUD-123');
      */
     async getDashboardValues(menu:string,subMenu:string,searchOutletName:string,filter:string,targetAuditId:string){
-        await this.outletPage.outletMenuAndSubMenu(menu,subMenu,searchOutletName,filter);
-        
-        await this.page.locator(this.audits).click();
-       while (true) {
+      //Reuse OutletMenuNav to navigate to Outlet Management page
+        //This handles sidebar menu click and submenu click internally
+      await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
+      await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
+        await this.page.locator(this.filter).click();
+        const options = await this.page.locator(this.selectOptions).allTextContents();
+        console.log(options);
+        await this.page.locator(this.filter).selectOption({ label: filter });
+       // Get all outlet names after search
+       const results = await this.page.locator(this.outletNameText).allTextContents();
+
+// Check if searched outlet exists
+const match = results.find(name =>name.trim().toLowerCase() === searchOutletName.trim().toLowerCase());
+if (match) {
+    console.log(`Outlet found: ${match}`);
+
+    // Click exact matching outlet
+    await this.page.locator(`//a[text()='${match}']`).click();
+
+} else {
+    console.log(`Outlet "${searchOutletName}" not found`);
+}
+
+      await this.page.locator(this.audits).click();
+        while (true) {
     // Get all rows on the current page
       
     const rows = this.page.locator(this.auditId);
