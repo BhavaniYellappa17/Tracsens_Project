@@ -3,17 +3,17 @@
     "menu": "Administration",
     "customerSubMenu": "Customers",
     "UserSubMenu": "Users",
-    "customerName": "Theo Simmons",
-    "customerEmail": "Simmons11@gmail.com",
+    "customerName": "Mason Parker",
+    "customerEmail": "Parker123@gmail.com",
     "customerPhone": "8776543175",
-    "customerVerifyName": "Theo Simmons",
-    "editcustomerName": "Simmons",
-    "userSearch": "Theo Simmons",
-    "userFullName": "Theo Simmons",
-    "userName": "simmons",
-    "userPassword": "TheoSimmonst@12345",
-    "userVerifyName": "Theo Simmons",
-    "editUserName": "Theo SimmonsPPP",
+    "customerVerifyName": "Mason Parker",
+    "editcustomerName": "Parkerr",
+    "userSearch": "Mason Parker",
+    "userFullName": "Mason Parker",
+    "userName": "parker",
+    "userPassword": "MasonParker@6789",
+    "userVerifyName": "Mason Parker",
+    "editUserName": "Mason ParkerPPP",
     
     "negativeCustomer": [
       {
@@ -21,21 +21,21 @@
         "customerName": "",
         "customerEmail": "Empty@gmail.com",
         "customerPhone": "9876543210",
-        "imagePath": "C:\\Users\\bhavani\\Downloads\\abstract-company-logo_53876-120501.png"
+        "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\abstract-company-logo_53876-120501.png"
       },
       {
         "testCase": "Empty email",
         "customerName": "DavidMil",
         "customerEmail": "",
         "customerPhone": "9876543210",
-        "imagePath": "C:\\Users\\bhavani\\Downloads\\abstract-company-logo_53876-120501.png"
+        "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\abstract-company-logo_53876-120501.png"
       },
       {
         "testCase": "Invalid email format",
         "customerName": "DavidMil",
         "customerEmail": "DavidMilEmailgmail.com",
         "customerPhone": "9876543210",
-        "imagePath": "C:\\Users\\bhavani\\Downloads\\abstract-company-logo_53876-120501.png"
+        "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\abstract-company-logo_53876-120501.png"
       },
       {
         "testCase": "Phone more than 10 digits",

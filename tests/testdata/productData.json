@@ -2,12 +2,12 @@
   {
     "menu": "Product Management",
     "ProductSubMenu": "Products",
-    "imagePath": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png",
-    "sproductName": "BLUEEEEEE GRAPEE BRANDYYYYYY",
-    "sdetailedDescription": "BLUEE GRAPE BRANDY",
-    "sstockKeepingUnit": "BLUEE_GRAPE_BRANDY_294ML",
-    "sstandardPrice": "17010",
-    "editProdName": "BLUEEEE GRAPEE BRANDYYY",
+    "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png",
+    "sproductName": "BLUE GRAPEE WHISKY",
+    "sdetailedDescription": "BLUEE GRAPE WHISKY",
+    "sstockKeepingUnit": "BLUEE_GRAPE_WHISKY_295ML",
+    "sstandardPrice": "1700",
+    "editProdName": "BLUEEEE GRAPEE WHISKY",
     "negativeProduct": [
       {
         "testCase": "Empty product name",
@@ -15,7 +15,7 @@
         "sstockKeepingUnit": "TEST_SKU_001",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Empty SKU",
@@ -23,7 +23,7 @@
         "sstockKeepingUnit": "",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Empty price",
@@ -31,7 +31,7 @@
         "sstockKeepingUnit": "TEST_SKU_001",
         "sstandardPrice": "",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Negative price",
@@ -39,7 +39,7 @@
         "sstockKeepingUnit": "TEST_SKU_001",
         "sstandardPrice": "-100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Price with letters",
@@ -47,7 +47,7 @@
         "sstockKeepingUnit": "TEST_SKU_001",
         "sstandardPrice": "abc",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Duplicate SKU",
@@ -55,7 +55,7 @@
         "sstockKeepingUnit": "BLUEE_GRAPE_BRANDY_294ML",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\LCIN05218.png"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Invalid image type xlsx",
@@ -63,7 +63,7 @@
         "sstockKeepingUnit": "TEST_SKU_002",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani\\Downloads\\Tracsens_TestScenarios 4.xlsx"
+        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\Tracsens_TestScenarios 4.xlsx"
       },
       {
         "testCase": "No image uploaded",
