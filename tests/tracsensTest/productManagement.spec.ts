@@ -48,25 +48,25 @@ test('Fetch ProductList', async ({ page }) => {
     test.setTimeout(600000);
     console.log("=== FETCH PRODUCT LIST TEST START ===");
 
-    // try {
+    try {
 
-    //     console.log("Initializing Page Object Model instances");
-    //     FetchProductNames = new productList(page);
-    //     console.log("✅ productList instance created");
+        console.log("Initializing Page Object Model instances");
+        FetchProductNames = new productList(page);
+        console.log("✅ productList instance created");
 
-    //     console.log("\nStep 1: Fetching all product names and SKUs");
-    //     await FetchProductNames.getAllProductNamesAndSKUs();
-    //     console.log("✅ All product names and SKUs fetched successfully");
+        console.log("\nStep 1: Fetching all product names and SKUs");
+        await FetchProductNames.getAllProductNamesAndSKUs();
+        console.log("✅ All product names and SKUs fetched successfully");
 
-    // } catch (error) {
-    //     if (error instanceof Error) {
-    //         console.log(`❌ Test failed with error: ${error.message}`);
-    //         console.log(`❌ Stack trace: ${error.stack}`);
-    //     } else {
-    //         console.log(`❌ Test failed with unknown error: ${error}`);
-    //     }
-    //     throw error;
-    // }
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log(`❌ Test failed with error: ${error.message}`);
+            console.log(`❌ Stack trace: ${error.stack}`);
+        } else {
+            console.log(`❌ Test failed with unknown error: ${error}`);
+        }
+        throw error;
+    }
 
     console.log("=== FETCH PRODUCT LIST TEST END ===");
 });

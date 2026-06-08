@@ -4,16 +4,16 @@
     "customerSubMenu": "Customers",
     "UserSubMenu": "Users",
     "customerName": "Mason Parker",
-    "customerEmail": "Parker123@gmail.com",
+    "customerEmail": "Parker12@gmail.com",
     "customerPhone": "8776543175",
     "customerVerifyName": "Mason Parker",
     "editcustomerName": "Parkerr",
-    "userSearch": "Mason Parker",
-    "userFullName": "Mason Parker",
-    "userName": "parker",
-    "userPassword": "MasonParker@6789",
-    "userVerifyName": "Mason Parker",
-    "editUserName": "Mason ParkerPPP",
+    "userSearch": "MasonPark",
+    "userFullName": "MasonPark",
+    "userName": "park",
+    "userPassword": "MasonPark@0987",
+    "userVerifyName": "MasonPark",
+    "editUserName": "MasonParkPPP",
     
     "negativeCustomer": [
       {

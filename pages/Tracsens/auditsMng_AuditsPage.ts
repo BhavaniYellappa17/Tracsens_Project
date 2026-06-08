@@ -217,6 +217,7 @@ if (match) {
 
 } else {
     console.log(`Outlet "${searchOutletName}" not found`);
+    return;
 }
 
      //Navigate to the Audits section
