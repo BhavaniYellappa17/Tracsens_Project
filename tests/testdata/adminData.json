@@ -3,17 +3,17 @@
     "menu": "Administration",
     "customerSubMenu": "Customers",
     "UserSubMenu": "Users",
-    "customerName": "Mason Parker",
-    "customerEmail": "Parker12@gmail.com",
-    "customerPhone": "8776543175",
-    "customerVerifyName": "Mason Parker",
-    "editcustomerName": "Parkerr",
-    "userSearch": "MasonPark",
-    "userFullName": "MasonPark",
-    "userName": "park",
-    "userPassword": "MasonPark@0987",
-    "userVerifyName": "MasonPark",
-    "editUserName": "MasonParkPPP",
+    "customerName": "Casey Miller",
+    "customerEmail": "Miller12@gmail.com",
+    "customerPhone": "8776543890",
+    "customerVerifyName": "Casey Miller",
+    "editcustomerName": "Millerr",
+    "userSearch": "Casey Miller",
+    "userFullName": "Casey Miller",
+    "userName": "miller",
+    "userPassword": "Millerrrrr@0987",
+    "userVerifyName": "Casey Miller",
+    "editUserName": "Casey MillerPPP",
     
     "negativeCustomer": [
       {
@@ -21,26 +21,26 @@
         "customerName": "",
         "customerEmail": "Empty@gmail.com",
         "customerPhone": "9876543210",
-        "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\abstract-company-logo_53876-120501.png"
+        "imagePath": "tests/testdata/images/abstract-company-logo_53876-120501.png"
       },
       {
         "testCase": "Empty email",
         "customerName": "DavidMil",
         "customerEmail": "",
         "customerPhone": "9876543210",
-        "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\abstract-company-logo_53876-120501.png"
+        "imagePath": "tests/testdata/images/abstract-company-logo_53876-120501.png"
       },
       {
         "testCase": "Invalid email format",
         "customerName": "DavidMil",
         "customerEmail": "DavidMilEmailgmail.com",
         "customerPhone": "9876543210",
-        "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\abstract-company-logo_53876-120501.png"
+        "imagePath": "tests/testdata/images/abstract-company-logo_53876-120501.png"
       },
       {
         "testCase": "Phone more than 10 digits",
         "customerName": "DavidMil",
-        "customerEmail": "DavidMil@gmail.com",
+        "customerEmail": "DavidMil12@gmail.com",
         "customerPhone": "123456789011",
         "imagePath": ""
       }

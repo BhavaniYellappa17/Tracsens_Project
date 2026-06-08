@@ -2,20 +2,20 @@
   {
     "menu": "Product Management",
     "ProductSubMenu": "Products",
-    "imagePath": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png",
-    "sproductName": "BLUE GRAPEE WHISKY",
-    "sdetailedDescription": "BLUEE GRAPE WHISKY",
-    "sstockKeepingUnit": "BLUEE_GRAPE_WHISKY_300ML",
-    "sstandardPrice": "1900",
-    "editProdName": "BLUEEEE GRAPEE WHISKY",
+    "imagePath": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png",
+    "sproductName": "BAGPIPER DELUXEE WHISKY",
+    "sdetailedDescription": "BAGPIPER DELUXEE WHISKY",
+    "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
+    "sstandardPrice": "1500",
+    "editProdName": "BAGPIPER DELUXEE WHISKY",
     "negativeProduct": [
       {
         "testCase": "Empty product name",
         "sproductName": "",
-        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Empty SKU",
@@ -23,23 +23,23 @@
         "sstockKeepingUnit": "",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Empty price",
         "sproductName": "Test Product",
-        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
         "sstandardPrice": "",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Negative price",
         "sproductName": "Test Product",
-        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
         "sstandardPrice": "-100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Price with letters",
@@ -47,15 +47,15 @@
         "sstockKeepingUnit": "TEST_SKU_001",
         "sstandardPrice": "abc",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Duplicate SKU",
         "sproductName": "Test Product",
-        "sstockKeepingUnit": "BLUEE_GRAPE_BRANDY_294ML",
+        "sstockKeepingUnit": "BAGPIPER DELUXEE WHISKY",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
       },
       {
         "testCase": "Invalid image type xlsx",
@@ -63,7 +63,7 @@
         "sstockKeepingUnit": "TEST_SKU_002",
         "sstandardPrice": "100",
         "sdetailedDescription": "Test Description",
-        "imageFile": "C:\\Users\\bhavani.Matryxsoft\\Downloads\\Tracsens_TestScenarios 4.xlsx"
+        "imageFile": "tests/testdata/images/Tracsens_TestScenarios 4.xlsx"
       },
       {
         "testCase": "No image uploaded",

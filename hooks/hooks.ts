@@ -151,11 +151,7 @@ test.beforeEach(async ({ page, browserName }) => {
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
             console.log(`ℹ️ Navigation attempt ${attempt} of 3`);
-            // await page.goto('https://prod.tracsens.com/login', {
-            //     waitUntil: 'domcontentloaded',
-            //     timeout: 30000
-            // });
-            await page.goto('/login', {waitUntil: 'domcontentloaded',timeout: 30000});
+            await page.goto('login', {waitUntil: 'domcontentloaded',timeout: 30000});
             // ✅ Confirm the URL actually changed from about:blank
             //await page.waitForURL('**/login', { timeout: 30000 });
             console.log(`✅ Navigation successful on attempt ${attempt}`);

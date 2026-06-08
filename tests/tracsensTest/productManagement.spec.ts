@@ -21,6 +21,7 @@
 
 import { test, expect } from '@playwright/test';
 import '../../hooks/hooks';
+import path from 'path';                  // ✅ ADDED: required to resolve relative image paths
 import { productList } from '../../pages/Tracsens/FetchProductNames';
 import { productCategory } from '../../pages/Tracsens/productCategory';
 import { productManagement } from '../../pages/Tracsens/createVerifyEditDeleteProduct';
@@ -112,15 +113,22 @@ test.describe('Positive - Product Management Tests', () => {
 
                 // ── STEP 1: Create Product ──
                 console.log(`\nStep 1: Creating product: "${data.sproductName}"`);
+
+                // ✅ Resolve relative imagePath from JSON to absolute path at runtime
+                // This ensures the path works on any machine or CI environment
+                const resolvedImagePath = path.resolve(data.imagePath);
+                console.log(`ℹ️ Resolved image path: "${resolvedImagePath}"`);
+
                 await productPage.createProductVerify(
                     data.sproductName,
                     data.sdetailedDescription,
                     data.sstockKeepingUnit,
                     data.sstandardPrice,
-                    data.imagePath,         // ✅ imagePath from JSON
+                    resolvedImagePath,      // ✅ passing resolved absolute path
                     data.menu,
                     data.ProductSubMenu
                 );
+
                 // ✅ Assert: Product table visible after creation
                 await expect(page.locator("//div[@class='product-table-scroll']")).toBeVisible({ timeout: 15000 });
                 console.log("✅ Assert passed: Product table visible after creation");
@@ -131,7 +139,7 @@ test.describe('Positive - Product Management Tests', () => {
 
                 // ── STEP 2: Edit and Delete Product ──
                 console.log(`\nStep 2: Editing product "${data.sproductName}" → "${data.editProdName}"`);
-                await productPage.editDeleteProduct(data.editProdName,data.sproductName,data.sstandardPrice);
+                await productPage.editDeleteProduct(data.editProdName, data.sproductName, data.sstandardPrice);
 
                 // ✅ Assert: Edited product name visible in table
                 await expect(page.locator(`//span[text()='${data.editProdName}']`).first()).toBeVisible({ timeout: 10000 });
@@ -245,19 +253,32 @@ test.describe('Negative - Product Management Tests', () => {
             await page.locator('.dropdown-menu').getByText('TejasDesai').click();
             console.log('✅ Company selected');
 
-            // Upload image if provided
+            // ── IMAGE UPLOAD ──
+            // Upload image only if imageFile is provided in test data.
+            // path.resolve() converts the relative path from JSON to an absolute path
+            // so it works correctly on any machine or CI environment.
             console.log(`ℹ️ Image file: "${negData.imageFile}"`);
             if (negData.imageFile && negData.imageFile.trim() !== '') {
-                await page.locator("//input[@id='hidden-file-input']").setInputFiles(negData.imageFile);
+
+                // ✅ Resolve relative imageFile path to absolute path at runtime
+                const resolvedImageFile = path.resolve(negData.imageFile);
+                console.log(`ℹ️ Resolved image file: "${resolvedImageFile}"`);
+
+                await page.locator("//input[@id='hidden-file-input']").setInputFiles(resolvedImageFile);
                 await page.waitForTimeout(1000);
-                const invalidFileError = await page.locator('//*[contains(text(),"JPG") or contains(text(),"PNG") or contains(text(),"WEBP") or contains(text(),"invalid") or contains(text(),"not supported")]').isVisible();
+
+                const invalidFileError = await page.locator(
+                    '//*[contains(text(),"JPG") or contains(text(),"PNG") or contains(text(),"WEBP") or contains(text(),"invalid") or contains(text(),"not supported")]'
+                ).isVisible();
+
                 if (invalidFileError) {
                     console.log('✅ Assert passed: Invalid file type error shown');
                 } else {
                     console.log('✅ Image uploaded successfully');
                 }
+
             } else {
-                console.log('ℹ️ No image — skipping upload');
+                console.log('ℹ️ No imageFile provided — skipping image upload');
             }
 
             // ── STEP 4: Verify Validation ──
@@ -284,12 +305,9 @@ test.describe('Negative - Product Management Tests', () => {
                 console.log('ℹ️ Negative price — clicking submit and checking');
                 await submitButton.click();
                 await page.waitForTimeout(1000);
-                const formVisible = await page.locator("//h5[text()='Add New Product to Catalog']"
-                ).isVisible();
+                const formVisible = await page.locator("//h5[text()='Add New Product to Catalog']").isVisible();
                 if (formVisible) {
-                    await expect(
-                        page.locator("//h5[text()='Add New Product to Catalog']")
-                    ).toBeVisible();
+                    await expect(page.locator("//h5[text()='Add New Product to Catalog']")).toBeVisible();
                     console.log('✅ Assert passed: Form still open — negative price blocked');
                 } else {
                     await expect(
@@ -306,9 +324,7 @@ test.describe('Negative - Product Management Tests', () => {
                 ).inputValue();
                 console.log(`ℹ️ Price field value: "${priceValue}"`);
                 if (priceValue === '' || priceValue === '0' || priceValue === '0.00') {
-                    expect(
-                        priceValue === '' || priceValue === '0' || priceValue === '0.00'
-                    ).toBeTruthy();
+                    expect(priceValue === '' || priceValue === '0' || priceValue === '0.00').toBeTruthy();
                     console.log('✅ Assert passed: Price field blocked letters');
                 } else {
                     await expect(submitButton).toBeDisabled({ timeout: 3000 });
@@ -340,9 +356,7 @@ test.describe('Negative - Product Management Tests', () => {
             }
             await page.waitForTimeout(1000);
 
-            const formStillOpen = await page.locator(
-                "//h5[text()='Add New Product to Catalog']"
-            ).isVisible();
+            const formStillOpen = await page.locator("//h5[text()='Add New Product to Catalog']").isVisible();
             if (formStillOpen) {
                 await page.locator("//button[text()='Cancel']").click();
                 await page.waitForTimeout(1000);
