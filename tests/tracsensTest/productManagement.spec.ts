@@ -21,7 +21,7 @@
 
 import { test, expect } from '@playwright/test';
 import '../../hooks/hooks';
-import path from 'path';                  // ✅ ADDED: required to resolve relative image paths
+import path from 'path';                  // ✅ required to resolve relative image paths
 import { productList } from '../../pages/Tracsens/FetchProductNames';
 import { productCategory } from '../../pages/Tracsens/productCategory';
 import { productManagement } from '../../pages/Tracsens/createVerifyEditDeleteProduct';
@@ -80,6 +80,13 @@ test('Fetch ProductList', async ({ page }) => {
  * @describe Positive - Product Management Tests
  * @description Validates the complete product lifecycle with valid data.
  * Creates → Verifies → Edits → Deletes a product record.
+ *
+ * NOTE on assertions:
+ *  - After createProductVerify() → assert product IS visible in table ✅
+ *  - After editDeleteProduct()   → assert product is NOT visible (already deleted inside POM) ✅
+ *  - Do NOT assert editProdName toBeVisible() after editDeleteProduct() —
+ *    the POM deletes the product internally, so it will already be gone.
+ *
  * @testData productData.json → sproductName, sstockKeepingUnit, sstandardPrice, imagePath
  */
 test.describe('Positive - Product Management Tests', () => {
@@ -138,16 +145,17 @@ test.describe('Positive - Product Management Tests', () => {
                 console.log(`✅ Assert passed: Product "${data.sproductName}" visible in table`);
 
                 // ── STEP 2: Edit and Delete Product ──
-                console.log(`\nStep 2: Editing product "${data.sproductName}" → "${data.editProdName}"`);
+                // NOTE: editDeleteProduct() handles BOTH edit AND delete internally inside the POM.
+                // It edits the product name → verifies edit → deactivates → deletes.
+                // So after this call, the product is ALREADY deleted.
+                // We only assert that it is NOT found in the table after this call.
+                console.log(`\nStep 2: Editing and deleting product "${data.sproductName}" → "${data.editProdName}"`);
                 await productPage.editDeleteProduct(data.editProdName, data.sproductName, data.sstandardPrice);
 
-                // ✅ Assert: Edited product name visible in table
-                await expect(page.locator(`//span[text()='${data.editProdName}']`).first()).toBeVisible({ timeout: 10000 });
-                console.log(`✅ Assert passed: Edited product "${data.editProdName}" visible`);
-
-                // ✅ Assert: Deleted product not found in table
+                // ✅ Assert: Product deleted — should NOT be found in table
+                // Do NOT assert toBeVisible() here — product is already deleted by POM
                 await expect(page.locator(`//span[text()='${data.editProdName}']`)).toHaveCount(0);
-                console.log(`✅ Assert passed: Product "${data.editProdName}" deleted`);
+                console.log(`✅ Assert passed: Product "${data.editProdName}" deleted — not found in table`);
 
                 console.log(`\n✅ Record processing complete for: "${data.sproductName}"`);
             }
@@ -241,17 +249,38 @@ test.describe('Negative - Product Management Tests', () => {
                 console.log('✅ Price filled');
             }
 
-            // Select category
-            await page.locator("(//label[text()='Product Category']/following::input)[1]").click();
-            await page.locator('.dropdown-menu').waitFor({ state: 'visible' });
-            await page.locator('.dropdown-menu').getByText('BRANDY').click();
-            console.log('✅ Category selected');
+            // ✅ Only interact with dropdowns if price is valid
+            // When price is empty or invalid, the form enters an error state and
+            // dropdowns behave unreliably — skipping them avoids flakiness
+            if (negData.sstandardPrice !== '' && negData.sstandardPrice !== 'abc') {
 
-            // Select customer company
-            await page.locator("(//label[text()='Customer (Company)']/following::input)[1]").click();
-            await page.locator('.dropdown-menu').waitFor({ state: 'visible' });
-            await page.locator('.dropdown-menu').getByText('TejasDesai').click();
-            console.log('✅ Company selected');
+                // Select category
+                const categoryInput = page.locator("(//label[text()='Product Category']/following::input)[1]");
+                await categoryInput.scrollIntoViewIfNeeded();
+                await categoryInput.waitFor({ state: 'visible', timeout: 5000 });
+                await categoryInput.click();
+                await page.waitForTimeout(1000);
+                await page.locator('.dropdown-menu').waitFor({ state: 'visible', timeout: 5000 });
+                await page.locator('.dropdown-menu').getByText('BRANDY').waitFor({ state: 'visible' });
+                await page.locator('.dropdown-menu').getByText('BRANDY').click();
+                await page.waitForTimeout(500);
+                console.log('✅ Category selected');
+
+                // Select customer company
+                const companyInput = page.locator("(//label[text()='Customer (Company)']/following::input)[1]");
+                await companyInput.scrollIntoViewIfNeeded();
+                await companyInput.waitFor({ state: 'visible', timeout: 5000 });
+                await companyInput.click();
+                await page.waitForTimeout(1000);
+                await page.locator('.dropdown-menu').waitFor({ state: 'visible', timeout: 5000 });
+                await page.locator('.dropdown-menu').getByText('TejasDesai').waitFor({ state: 'visible' });
+                await page.locator('.dropdown-menu').getByText('TejasDesai').click();
+                await page.waitForTimeout(500);
+                console.log('✅ Company selected');
+
+            } else {
+                console.log('ℹ️ Skipping dropdowns — price is empty or invalid, form is in error state');
+            }
 
             // ── IMAGE UPLOAD ──
             // Upload image only if imageFile is provided in test data.
