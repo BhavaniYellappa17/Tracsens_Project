@@ -3,17 +3,17 @@
     "menu": "Administration",
     "customerSubMenu": "Customers",
     "UserSubMenu": "Users",
-    "customerName": "Riley Thomas",
-    "customerEmail": "Riley111@gmail.com",
-    "customerPhone": "8776543811",
-    "customerVerifyName": "Riley Thomas",
-    "editcustomerName": "Riley",
-    "userSearch": "Riley Thomas",
-    "userFullName": "Riley Thomas",
-    "userName": "riley",
-    "userPassword": "Rileyyyyyy@0987",
-    "userVerifyName": "Riley Thomas",
-    "editUserName": "Riley ThomasPPP",
+    "customerName": "Pierre Dubois",
+    "customerEmail": "Pierre13@gmail.com",
+    "customerPhone": "8776543810",
+    "customerVerifyName": "Pierre Dubois",
+    "editcustomerName": "Pierre",
+    "userSearch": "Pierre Dubois",
+    "userFullName": "Pierre Dubois",
+    "userName": "pierre",
+    "userPassword": "PierreDubois@0987",
+    "userVerifyName": "Pierre Dubois",
+    "editUserName": "Pierre DuboisPPP",
     
     "negativeCustomer": [
       {
@@ -40,7 +40,7 @@
       {
         "testCase": "Phone more than 10 digits",
         "customerName": "DavidMil",
-        "customerEmail": "DavidMil13@gmail.com",
+        "customerEmail": "DavidMil15@gmail.com",
         "customerPhone": "123456789011",
         "imagePath": ""
       }

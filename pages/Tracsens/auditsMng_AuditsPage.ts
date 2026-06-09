@@ -22,12 +22,7 @@ export class AuditPage{
         
     }
      //****************** Locators ***************/
-     // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet.Audit Management )
-     homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
-
-      // Submenu items under AuditManagement (Audits)
-     auditSubMenu='//span[@class="lan-4"]';
-
+     
      //Audit Management page header (used for validation)
      auditMngPage='//h1[text()="Audit Management"]';
 
@@ -148,6 +143,7 @@ export class AuditPage{
      * @param subMenu          - Sub menu name to click (e.g., "Outlets")
      * @param searchOutletName - Outlet name to search (e.g., "Madhuloka liquor")
      * @param filter           - Filter value to select (e.g., "All time")
+     * @param Status           - Status Value to select(e.g.,"All Status")
      * @param targetAuditId    - Audit ID to search for (e.g., "AUD-1756202792595-df67f19d")
      * @param selectCategory   - Category name to select (e.g., "All Categories")
      *
@@ -170,11 +166,11 @@ async auditsPage(menu:string,subMenu:string,searchOutletName:string,filter:strin
             await this.page.locator(this.status).selectOption({ label: status });
             console.log(`Status "${status}" selected.`);
         } else {
-            console.log(`Status "${status}" not found in dropdown. Skipping.`);
+            console.log(`Status "${status}" not found in dropdown.`);
             return []; 
         }
     } else {
-        console.log(`Empty status provided. Skipping status selection.`);
+        console.log(`Invalid Input — Status field is empty.`);
         return []; 
     }
      
@@ -191,14 +187,14 @@ async auditsPage(menu:string,subMenu:string,searchOutletName:string,filter:strin
             return []; 
         }
     } else {
-        console.log(`Empty filter provided. Skipping filter selection.`);
+        console.log(`Invalid Input — Filter field is empty.`);
         return []; 
     }
 
     const noRecordsVisible = await this.page.locator(this.noRecordsToFoundMessage).isVisible().catch(() => false);
     if (noRecordsVisible) {
         console.log(`No records found for Status: "${status}" and Filter: "${filter}"`);
-        console.log(`Message displayed: "There are no records to display"`);
+        console.log("There are no records to display");
         return [];
     }
      

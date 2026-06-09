@@ -548,7 +548,7 @@ test.describe('Dashboard Tests', () => {
 
   getDashboardValues.forEach((data) => {
 
-    test.only(`${data.testCase}`, async ({ page }) => {
+    test(`${data.testCase}`, async ({ page }) => {
       
 
       const dashboardPage = new AuditMng_DashboardPage(page);
