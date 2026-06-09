@@ -23,16 +23,7 @@ export class AuditMng_DashboardPage{
 
     //**************Locators ****************/
 
-    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet,Audit Management )
-     homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
-
-     // Submenu items under AuditManagement (Audits)
-     auditSubMenu='//span[@class="lan-4"]';
-
-     //Audit Management page header (used for validation)
-     auditMngPage='//h1[text()="Audit Management"]';
-
-     //Outlet name link to click and navigate to outlet details
+    //Outlet name link to click and navigate to outlet details
      outletNameText='//span[@class="audit-outlet-name-link"]';
 
     //Outlet name heading on outlet information page
@@ -56,7 +47,7 @@ export class AuditMng_DashboardPage{
      //Select Status
      allStatus='(//select[@class="select-premium-filter form-select"])[1]/option';
 
-    //AuditsLink
+    //Audits Link
      audits='(//span[@class="tab-label"])[2]';
 
     //Each row in the Audit ID table
@@ -83,8 +74,7 @@ export class AuditMng_DashboardPage{
     // Retention Rate percentage value (e.g., 14%)
     retentionRateValue='//div[text()="Retention Rate"]/preceding-sibling::div';
 
-    
-    //Missing SKUs text content next to each missing SKU image
+   //Missing SKUs text content next to each missing SKU image
     missingSkus='//div[@class="audit-missing-sku-img-wrap"]/following-sibling::div';
 
     //Export PDF button inside the dashboard modal
@@ -103,13 +93,11 @@ export class AuditMng_DashboardPage{
      * Description: This function performs complete dashboard page operations by:
      *
      * Navigation Steps:
-     * 1. Reuses AuditMenuNav to navigate to Audit Management page
-     *    (handles sidebar menu and submenu clicks internally)
-     *
+     * 1. Reuses AuditMenuNav to navigate to Audit Management page(handles sidebar menu and submenu clicks internally)
      * Search and Filter Steps:
      * 2. Fills search box with outlet name
      * 3. Opens date filter dropdown and selects given filter
-     * 4.Opens status dropdown and selects given status
+     * 4. Opens status dropdown and selects given status
      * 5. Clicks outlet name to navigate to outlet details page
      * 6. Clicks Audits tab to navigate to audit section
      *
@@ -118,7 +106,7 @@ export class AuditMng_DashboardPage{
      * 7. Scrolls to matched row and clicks View Performance Dashboard button
      * 8. If not found on current page, checks if Next button is disabled
      * 9. If Next is disabled logs Audit ID not found and stops
-     * 10. If Next is enabled clicks Next and repeats search
+     * 10.If Next is enabled clicks Next and repeats search
      *
      * Dashboard Values Extraction Steps:
      * 11. Fetches and logs Unique SKUs count value
@@ -143,15 +131,15 @@ export class AuditMng_DashboardPage{
      * @param menu             - Main menu name to click (e.g., "Audit Management")
      * @param subMenu          - Sub menu name to click (e.g., "Audits")
      * @param searchOutletName - Outlet name to search (e.g., "Madhuloka liquor")
-     * @param filter           - Filter value to select (e.g., "All time")
+     * @param status           - Status value to select(e.g, "All Status")
+     * @param filter           - Filter value to select (e.g., "Today")
      * @param targetAuditId    - Audit ID to search for (e.g., "AUD-1767761954121-95a38e24")
      *
      * Example Usage:
-     * await getDashboardValues('Audit Management', 'Audits', 'Madhuloka liquor', 'All time', 'AUD-123');
+     * await getDashboardValues('Audit Management', 'Audits', 'Madhuloka liquor','All Status', 'Today', 'AUD-123');
      */
     async getDashboardValues(menu:string,subMenu:string,searchOutletName:string,filter:string,status:string,targetAuditId:string){
-      //Reuse AuditMenuNav to navigate to Audit Management page
-        //This handles sidebar menu click and submenu click internally
+      //Reuse AuditMenuNav to navigate to Audit Management page,This handles sidebar menu click and submenu click 
       await this.auditMenuNav.auditMenuAndSubMenu(menu, subMenu);
       await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
       await this.page.locator(this.status).click();
@@ -163,12 +151,12 @@ export class AuditMng_DashboardPage{
             await this.page.locator(this.status).selectOption({ label: status });
             console.log(`Status "${status}" selected.`);
         } else {
-            console.log(`Status "${status}" not found in dropdown. Skipping.`);
-            return []; 
+            console.log(`Status "${status}" not found.`);
+            return; 
         }
     } else {
-        console.log(`Empty status provided. Skipping status selection.`);
-        return []; 
+        console.log(`Invalid Input — Status field is empty.`);
+        return; 
     }
      
      await this.page.locator(this.filter).click();
@@ -180,19 +168,19 @@ export class AuditMng_DashboardPage{
             await this.page.locator(this.filter).selectOption({ label: filter });
             console.log(`Filter "${filter}" selected.`);
         } else {
-            console.log(`Filter "${filter}" not found in dropdown. Skipping.`);
-            return []; 
+            console.log(`Filter "${filter}" not found`);
+            return; 
         }
     } else {
-        console.log(`Empty filter provided. Skipping filter selection.`);
-        return []; 
+        console.log(`Invalid Input — filter field is empty.`);
+        return; 
     }
 
     const noRecordsVisible = await this.page.locator(this.noRecordsToFoundMessage).isVisible().catch(() => false);
     if (noRecordsVisible) {
         console.log(`No records found for Status: "${status}" and Filter: "${filter}"`);
-        console.log(`Message displayed: "There are no records to display"`);
-        return [];
+        console.log("There are no records to display");
+        return;
     }
      
 await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
