@@ -195,7 +195,7 @@ export class AuditMng_DashboardPage{
         return [];
     }
      
-
+await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
 // Get all outlet names after search
 const results = await this.page.locator(this.outletNameText).allTextContents();
 console.log(results);
@@ -215,10 +215,12 @@ if (match) {
 
 
       await this.page.locator(this.audits).click();
+      await this.page.waitForTimeout(2000);
         while (true) {
     // Get all rows on the current page
       
     const rows = this.page.locator(this.auditId);
+    await rows.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
     const rowCount = await rows.count();
     //let found = false;
    //Iterate through each row to match the Audit ID
@@ -228,6 +230,7 @@ if (match) {
      //If the Audit ID matches, scroll to it and click View button
       if (text?.includes(targetAuditId)) {
         await row.scrollIntoViewIfNeeded();
+        await this.page.locator(this.viewDashboard).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
         await row.locator(this.viewDashboard).click();
         console.log("\n========== DASHBOARD VALUES ==========");
         

@@ -163,7 +163,7 @@
       "selectCategory": "All Categories"
     },
     {
-      "testCase": "4)Valid Outlet with Different Status and Filter",
+      "testCase": "4)Valid Outlet with Different Status and Filter and Invalid AuditID",
       "menu": "Audit Management",
       "subMenu": "Audits",
       "searchOutletName": "KUNDAN CHEETA --2000379",

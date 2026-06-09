@@ -77,7 +77,7 @@ test.describe('Menu Navigation Tests', () => {
     // Iterate through each test case from menuAndSubMenuTestCases JSON array
     menuData.forEach((data) => {
 
-        test.only(`${data.testCase}`, async ({ page }) => {
+        test(`${data.testCase}`, async ({ page }) => {
 
             // Create AuditMenuNav page object instance for sidebar navigation
             const auditMenuPage = new AuditMenuNav(page);
@@ -476,7 +476,7 @@ test.describe('Audit Page Tests', () => {
 
         // Skip empty Audit ID
         if (!data.targetAuditId?.trim()) {
-          console.log("⚠️ Audit ID is empty — skipping test");
+          console.log("Audit ID is empty — skipping test");
           return;
         }
 

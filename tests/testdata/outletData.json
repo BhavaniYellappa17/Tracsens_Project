@@ -99,7 +99,7 @@
     "selectCategory": "All Categories"
   },
   {
-    "testCase": "Audit Page - Invalid Audit ID",
+    "testCase": "Audit Page - Valid Audit ID",
     "menu": "Outlet Management",
     "subMenu": "Outlets",
     "searchOutletName": "Chirag Wines",

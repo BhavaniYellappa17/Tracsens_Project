@@ -316,11 +316,9 @@ test.describe('Search Particular Outlet Name', () => {
                 await outletPage.searchOutletName(data.menu, data.subMenu, data.searchOutletName, data.filter);
 
                 // ==================== VERIFICATION ====================
-
+                await page.waitForTimeout(2000);
                 // Check if navigation to outlet information page occurred
-                const isNavigated = await page.locator(outletPage.outletInformationText)
-                    .isVisible()
-                    .catch(() => false);
+                const isNavigated = await page.locator(outletPage.outletInformationText).isVisible().catch(() => false);
 
                 if (!isNavigated) {
 
@@ -332,8 +330,7 @@ test.describe('Search Particular Outlet Name', () => {
 
                     // ✅ Valid case — outlet information page loaded
                     try {
-                        await expect(page.locator(outletPage.outletInformationText))
-                            .toBeVisible({ timeout: 10000 });
+                        await expect(page.locator(outletPage.outletInformationText)).toBeVisible({ timeout: 10000 });
                         console.log(`✅ Verified — Outlet Information page header is visible`);
                         console.log(`✅ All verifications passed for "${data.testCase}"`);
                     } catch (verifyError) {
@@ -598,7 +595,7 @@ test.describe('Dashboard Tests', () => {
                 await dashboardPage.getDashboardValues(data.menu,data.subMenu,data.searchOutletName,data.filter,data.targetAuditId);
 
                 // ==================== VERIFICATION ====================
-                await expect(page.locator(dashboardPage.verifyAuditId)).toBeVisible({ timeout: 10000 });
+                await expect(page.locator(dashboardPage.verifyAuditId)).toBeVisible();
                 console.log(`✅ Verified — Audit ID column header is visible`);
             } catch (error) {
                 if (error instanceof Error) {

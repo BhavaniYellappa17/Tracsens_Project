@@ -150,14 +150,25 @@ export class AllOutletNames_AuditPage{
         console.log(`Empty filter provided. Skipping filter selection.`);
         return []; 
     }
+      await this.page.waitForTimeout(5000);
+    
 
+    // ✅ Check no records BEFORE expanding table
     const noRecordsVisible = await this.page.locator(this.noRecordsToFoundMessage).isVisible().catch(() => false);
+
     if (noRecordsVisible) {
         console.log(`No records found for Status: "${status}" and Filter: "${filter}"`);
-        console.log(`Message displayed:'There are no records to display'`);
+        console.log(`Message displayed: "There are no records to display"`);
         return [];
     }
-     
+
+    // ✅ Check if table has any rows before expanding
+    const rowCount = await this.page.locator(this.outletNames).count();
+    if (rowCount === 0) {
+        console.log(`No outlet rows found for Status: "${status}" and Filter: "${filter}"`);
+        return [];
+    }
+
     let filterFound  = false;
     await this.page.locator(this.expandTable).click();
     const allOutletNames:string[]=[];

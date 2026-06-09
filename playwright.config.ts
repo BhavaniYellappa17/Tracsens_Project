@@ -99,7 +99,7 @@ export default defineConfig({
 
         launchOptions: {
             executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-            slowMo: 0,
+            slowMo:0,
             args: ['--start-maximized']
         },
     },
