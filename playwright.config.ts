@@ -59,19 +59,28 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
 
+    // ==================== TEST CONFIGURATION ====================
+
+    // Directory where test files are located
     testDir: './tests/tracsensTest',
 
+    // Maximum time for each test to run (3 minutes)
     timeout: 180000,
 
+    // Maximum time for expect() assertions
     expect: {
         timeout: 10000,
     },
 
+    // Run tests sequentially — one at a time
     fullyParallel: false,
     workers: 1,
     retries: 0,
+
+    // Prevent test.only from being committed to CI
     forbidOnly: !!process.env.CI,
 
+    // ==================== REPORTERS ====================
     reporter: [
         ['list'],
         ['html'],
@@ -81,29 +90,45 @@ export default defineConfig({
         }]
     ],
 
+    // ==================== BROWSER CONFIGURATION ====================
     use: {
+        // Base URL for all page.goto() calls
         baseURL: 'https://prod.tracsens.com/',
+
+        // Screenshot only on test failure
         screenshot: 'only-on-failure',
+
+        // Video recording off
         video: 'off',
+
+        // Trace only on first retry
         trace: 'on-first-retry',
-        headless: false,
 
-        // ✅ Set proper viewport
-        //viewport: { width: 1280, height: 720 },
-        viewport:null,
+        // ✅ Run headless — required for GitHub Actions (no display)
+        headless: true,
 
-        // ✅ Add navigation and action timeouts
-        // Without these, new context sits on about:blank indefinitely
-         navigationTimeout: 60000,
-         actionTimeout: 30000,
+        // ✅ Use full viewport — null means use browser default
+        viewport: null,
 
+        // ✅ Navigation timeout — max time for page navigation
+        navigationTimeout: 60000,
+
+        // ✅ Action timeout — max time for click, fill etc
+        actionTimeout: 30000,
+
+        // ✅ Launch options — no executablePath for GitHub Actions
         launchOptions: {
-            executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-            slowMo:0,
-            args: ['--start-maximized']
+            slowMo: 0,
+            args: [
+                '--start-maximized',
+                '--no-sandbox',              // ✅ required for Linux/GitHub Actions
+                '--disable-setuid-sandbox',  // ✅ required for Linux/GitHub Actions
+                '--disable-dev-shm-usage'    // ✅ prevents memory issues on GitHub Actions
+            ]
         },
     },
 
+    // ==================== PROJECTS ====================
     projects: [
         {
             name: 'chromium',
