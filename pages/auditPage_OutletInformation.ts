@@ -144,7 +144,8 @@ export class AuditPng_OutletInformationPage{
         // This handles sidebar menu click and submenu click internally
         await this.auditMenuNav.auditMenuAndSubMenu(menu, subMenu);
         await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
-    await this.page.locator(this.status).click();
+        await this.page.waitForTimeout(2000);
+      await this.page.locator(this.status).click();
      const allStatus=await this.page.locator(this.allStatus).allTextContents();
      console.log(allStatus);
      if (status && status.trim() !== '') {
@@ -185,6 +186,7 @@ export class AuditPng_OutletInformationPage{
         return [];
     }
      
+await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
 
 // Get all outlet names after search
 const results = await this.page.locator(this.outletNameText).allTextContents();

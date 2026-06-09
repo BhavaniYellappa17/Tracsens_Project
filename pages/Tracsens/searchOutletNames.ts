@@ -105,8 +105,10 @@ export class OutletPage{
     console.log(`Filter "${filter}" not found in dropdown. Skipping.`);
     return;
 }
+await this.page.locator(this.outletNameText).first().waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+
         
-       // Get all outlet names after search
+// Get all outlet names after search
  const results = await this.page.locator(this.outletNameText).allTextContents();
 
 // Check if searched outlet exists

@@ -145,6 +145,7 @@ export class DashboardPage{
         const options = await this.page.locator(this.selectOptions).allTextContents();
         console.log(options);
         await this.page.locator(this.filter).selectOption({ label: filter });
+        await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
        // Get all outlet names after search
        const results = await this.page.locator(this.outletNameText).allTextContents();
 
@@ -161,10 +162,12 @@ if (match) {
 }
 
       await this.page.locator(this.audits).click();
+      await this.page.waitForTimeout(2000);
         while (true) {
     // Get all rows on the current page
       
     const rows = this.page.locator(this.auditId);
+    await rows.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
     const rowCount = await rows.count();
     //let found = false;
    //Iterate through each row to match the Audit ID

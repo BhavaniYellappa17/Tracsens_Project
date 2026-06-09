@@ -123,6 +123,7 @@ export class OutletInformationPage{
         const options = await this.page.locator(this.selectOptions).allTextContents();
         console.log(options);
         await this.page.locator(this.filterDate).selectOption({ label: filter });
+        await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
        // Get all outlet names after search
        const results = await this.page.locator(this.outletNameText).allTextContents();
 
@@ -138,7 +139,7 @@ export class OutletInformationPage{
     console.log(`Outlet "${searchOutletName}" not found`);
 }
 
-
+        await this.page.waitForTimeout(2000);
         await this.page.locator(this.outletInformationLink).click();
         console.log("\n========== OUTLET INFORMATION ==========");
 

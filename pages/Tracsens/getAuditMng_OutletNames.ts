@@ -55,6 +55,25 @@ export class AllOutletNames_AuditPage{
      //Rack Count
      rackCount='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP jjhabC jQKZqR rdt_TableCell"]';
 
+     //Unique Skus
+     uniqueSkus='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP kxoxXp jQKZqR rdt_TableCell"]';
+
+     //detected skus
+     detectedSkus='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP faHMk jQKZqR rdt_TableCell"]';
+
+     //SKU Change
+     skuChange='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP kxoxXp iOgaEC rdt_TableCell"]';
+
+     //SKU Change Percentage 
+     skuChangePercentage='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP faHMk iOgaEC rdt_TableCell"]';
+
+     //Detected SKU Change
+     detectedSkuChange='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP dfTqnt iOgaEC rdt_TableCell"]';
+
+
+     //Detected SKU Change percentage
+     detectedSkuPercentage='//div[@class="sc-ggWZvA sc-dTvVRJ sc-jwTyAe iBnlJP bJQLez iOgaEC rdt_TableCell"]';
+
     /**
      * @function   getAllOutletNames_AuditMng
      * @author     Lakshmi
@@ -131,31 +150,59 @@ export class AllOutletNames_AuditPage{
         console.log(`Empty filter provided. Skipping filter selection.`);
         return []; 
     }
+      await this.page.waitForTimeout(5000);
+    
 
+    // ✅ Check no records BEFORE expanding table
     const noRecordsVisible = await this.page.locator(this.noRecordsToFoundMessage).isVisible().catch(() => false);
+
     if (noRecordsVisible) {
         console.log(`No records found for Status: "${status}" and Filter: "${filter}"`);
-        console.log(`Message displayed:'There are no records to display'`);
+        console.log(`Message displayed: "There are no records to display"`);
         return [];
     }
-     
+
+    // ✅ Check if table has any rows before expanding
+    const rowCount = await this.page.locator(this.outletNames).count();
+    if (rowCount === 0) {
+        console.log(`No outlet rows found for Status: "${status}" and Filter: "${filter}"`);
+        return [];
+    }
+
     let filterFound  = false;
-    //await this.page.locator(this.expandTable).click();
+    await this.page.locator(this.expandTable).click();
     const allOutletNames:string[]=[];
     const allCreatedDate:string[]=[];
-    //const outletStatus:string[]=[];
-    //const outletRackCount:string[]=[];
+    const outletStatus:string[]=[];
+    const outletRackCount:string[]=[];
+    const uniqueSkus:string[]=[];
+    const detectedSkus:string[]=[];
+    const skuChange:string[]=[];
+    const skusChangePercentage:string[]=[];
+    const detectedSkuChange:string[]=[];
+    const detectedSkuPercentage:string[]=[];
      
      while(true){
         const outletNames=await this.page.locator(this.outletNames).allTextContents();
         allOutletNames.push(...outletNames);
         const createdDate=await this.page.locator(this.createdDateAndTime).allTextContents();
         allCreatedDate.push(...createdDate);
-        // const getOutletStatus=await this.page.locator(this.outletStatus).allTextContents();
-        // outletStatus.push(...getOutletStatus);
-        // const getOutletRackCounts=await this.page.locator(this.rackCount).allTextContents();
-        // outletRackCount.push(...getOutletRackCounts);
-
+        const getOutletStatus=await this.page.locator(this.outletStatus).allTextContents();
+        outletStatus.push(...getOutletStatus);
+        const getOutletRackCounts=await this.page.locator(this.rackCount).allTextContents();
+        outletRackCount.push(...getOutletRackCounts);
+        const getAllUniqueSkus=await this.page.locator(this.uniqueSkus).allTextContents();
+        uniqueSkus.push(...getAllUniqueSkus);
+        const getAllDetectedSkus=await this.page.locator(this.detectedSkus).allTextContents();
+        detectedSkus.push(...getAllDetectedSkus);
+        const getSkuChangeValue=await this.page.locator(this.skuChange).allTextContents();
+        skuChange.push(...getSkuChangeValue);
+        const getskuChangePercentage=await this.page.locator(this.skuChangePercentage).allTextContents();
+        skusChangePercentage.push(...getskuChangePercentage);
+        const getdetectedSkuChange=await this.page.locator(this.detectedSkuChange).allTextContents();
+        detectedSkuChange.push(...getdetectedSkuChange);
+        const getdetectedSkuChangePercentage=await this.page.locator(this.detectedSkuPercentage).allTextContents();
+        detectedSkuPercentage.push(...getdetectedSkuChangePercentage);
 
         //Check if next button is disabled before clicking
         const nextButton = this.page.locator(this.nextButton);
@@ -170,12 +217,11 @@ export class AllOutletNames_AuditPage{
      }
          console.log("\n========== ALL OUTLET NAMES ==========");
          for(let i=0;i<allOutletNames.length;i++){
-            console.log(`${i+1}.${allOutletNames[i]}------${allCreatedDate[i]}`);
+            console.log(`${i+1}. ${allOutletNames[i]} ------Status:${outletStatus[i]}----CreatedDate: ${allCreatedDate[i]} ----- RackCount: ${outletRackCount[i]}----UniqueSkus:${uniqueSkus[i]}---DetectedSkus:${detectedSkus[i]}---SkuChange:${skuChange[i]}---SkuChangePercentage:${skusChangePercentage[i]}---detectedSkuChange:${detectedSkuChange[i]}---detectedSkuChangePercentage:${detectedSkuPercentage[i]}`);
          }
          return allOutletNames;
     }
         }
-        
         
 
 

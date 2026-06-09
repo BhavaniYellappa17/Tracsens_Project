@@ -146,6 +146,7 @@ async auditsPage(menu:string,subMenu:string,searchOutletName:string,filter:strin
         const options = await this.page.locator(this.selectOptions).allTextContents();
         console.log(options);
         await this.page.locator(this.filterDate).selectOption({ label: filter });
+        await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
        // Get all outlet names after search
  const results = await this.page.locator(this.outletNameText).allTextContents();
 
@@ -162,11 +163,13 @@ if (match) {
 }
 //Navigate to the Audits section
         await this.page.locator(this.audits).click();
+        await this.page.waitForTimeout(2000);
         let auditFound = false;
 //Loop through all pages to find the target Audit ID
     while (true) {
     // Get all rows on the current page
     const rows = this.page.locator(this.auditId);
+    await rows.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
     const rowCount = await rows.count();
    //Iterate through each row to match the Audit ID
     for (let i = 0; i < rowCount; i++) {
@@ -180,7 +183,7 @@ if (match) {
         await row.locator(this.viewButton).click();
         console.log("\n========== AUDIT INFORMATION ==========");
         console.log(`Clicked View for: ${targetAuditId}`);
-        await this.page.waitForTimeout(1000);
+        await this.page.waitForTimeout(2000);
         
         //Reset all filters inside the modal
         await this.page.locator(this.restFilter).click();
