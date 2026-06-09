@@ -99,7 +99,7 @@ export default defineConfig({
         screenshot: 'only-on-failure',
 
         // Video recording off
-        video: 'off',
+        video: 'on',
 
         // Trace only on first retry
         trace: 'on-first-retry',
