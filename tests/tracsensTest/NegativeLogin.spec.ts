@@ -40,7 +40,7 @@ test.describe('Negative Login Tests', () => {
 
     for (const data of loginData.invalidLogin) {
 
-        test(`Negative Login - ${data.testCase}`, async ({ page }) => {
+        test.only(`Negative Login - ${data.testCase}`, async ({ page }) => {
 
             // Set test timeout to 60 seconds
             test.setTimeout(60000);
