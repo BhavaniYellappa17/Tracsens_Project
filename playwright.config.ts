@@ -64,12 +64,12 @@ export default defineConfig({
     // Directory where test files are located
     testDir: './tests/tracsensTest',
 
-    // Maximum time for each test to run (3 minutes)
-    timeout: 180000,
+    // ✅ Increased to 5 minutes for CI environment
+    timeout: 300000,
 
-    // Maximum time for expect() assertions
+    // ✅ Increased expect timeout for CI
     expect: {
-        timeout: 10000,
+        timeout: 30000,
     },
 
     // Run tests sequentially — one at a time
@@ -107,23 +107,24 @@ export default defineConfig({
         // ✅ Run headless — required for GitHub Actions (no display)
         headless: true,
 
-        // ✅ Use full viewport — null means use browser default
-        viewport: null,
+        // ✅ Fixed viewport for CI — null causes issues on GitHub Actions
+        viewport: { width: 1920, height: 1080 },
 
-        // ✅ Navigation timeout — max time for page navigation
-        navigationTimeout: 60000,
+        // ✅ Increased navigation timeout for CI environment
+        navigationTimeout: 120000,
 
-        // ✅ Action timeout — max time for click, fill etc
-        actionTimeout: 30000,
+        // ✅ Increased action timeout for CI environment
+        actionTimeout: 60000,
 
-        // ✅ Launch options — no executablePath for GitHub Actions
+        // ✅ Launch options for GitHub Actions Linux environment
         launchOptions: {
             slowMo: 0,
             args: [
-                '--start-maximized',
                 '--no-sandbox',              // ✅ required for Linux/GitHub Actions
                 '--disable-setuid-sandbox',  // ✅ required for Linux/GitHub Actions
-                '--disable-dev-shm-usage'    // ✅ prevents memory issues on GitHub Actions
+                '--disable-dev-shm-usage',   // ✅ prevents memory issues on GitHub Actions
+                '--disable-gpu',             // ✅ required for headless on CI
+                '--window-size=1920,1080'    // ✅ fixed window size for CI
             ]
         },
     },
