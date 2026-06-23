@@ -1,4 +1,5 @@
 
+
 # Playwright
 node_modules/
 /test-results/
@@ -6,3 +7,20 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Environment variables
+.env
+
+# Generated report archive
+playwright-report.zip
+
+# Monocart report
+/monocart-report/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
