@@ -79,7 +79,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    - cron: '50 7 * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   playwright-tests:
