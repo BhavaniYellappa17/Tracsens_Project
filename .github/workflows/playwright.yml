@@ -1,11 +1,86 @@
+# name: Playwright Tests
+
+# on:
+#   push:
+#     branches: [ main, feature/* ]
+#   pull_request:
+#     branches: [ main ]
+#   workflow_dispatch:
+
+# jobs:
+#   playwright-tests:
+#     name: Run Playwright Tests
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 120
+
+#     steps:
+
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '18'
+#           cache: 'npm'
+
+#       - name: Install Dependencies
+#         run: npm ci
+
+#       - name: Install Playwright Browsers
+#         run: npx playwright install --with-deps chromium
+
+#       # ✅ Run tests — continue even if tests fail
+#       - name: Run Playwright Tests
+#         run: npx playwright test
+#         continue-on-error: true
+#         env:
+#           CI: true
+
+#       # ✅ Upload Monocart Report
+#       - name: Upload Monocart Report
+#         uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: Tracsens-Monocart-Report
+#           path: monocart-report/
+#           retention-days: 30
+#           if-no-files-found: warn
+
+#       # ✅ Upload Playwright HTML Report (contains videos)
+#       - name: Upload Playwright HTML Report
+#         uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: Tracsens-Playwright-HTML-Report
+#           path: playwright-report/
+#           retention-days: 30
+#           if-no-files-found: warn
+
+#       # ✅ Upload Test Results (contains videos and screenshots)
+#       - name: Upload Test Results
+#         uses: actions/upload-artifact@v4
+#         if: always()
+#         with:
+#           name: Tracsens-Test-Results
+#           path: test-results/
+#           retention-days: 30
+#           if-no-files-found: warn
+
 name: Playwright Tests
 
 on:
   push:
     branches: [ main, feature/* ]
+
   pull_request:
     branches: [ main ]
+
   workflow_dispatch:
+
+  # ✅ Scheduler (Daily at 6 AM IST)
+  schedule:
+  - cron: '30 7 * * *'
 
 jobs:
   playwright-tests:
@@ -30,8 +105,9 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      # ✅ Run tests — continue even if tests fail
+      # ✅ Run tests (continue even if failed)
       - name: Run Playwright Tests
+        id: run-playwright   # 🔥 IMPORTANT FIX
         run: npx playwright test
         continue-on-error: true
         env:
@@ -47,7 +123,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      # ✅ Upload Playwright HTML Report (contains videos)
+      # ✅ Upload Playwright HTML Report
       - name: Upload Playwright HTML Report
         uses: actions/upload-artifact@v4
         if: always()
@@ -57,7 +133,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      # ✅ Upload Test Results (contains videos and screenshots)
+      # ✅ Upload Test Results (videos + screenshots)
       - name: Upload Test Results
         uses: actions/upload-artifact@v4
         if: always()
@@ -66,3 +142,8 @@ jobs:
           path: test-results/
           retention-days: 30
           if-no-files-found: warn
+
+      # ✅ Fail job if tests failed (after uploading reports)
+      - name: Fail if tests failed
+        if: steps.run-playwright.outcome == 'failure'
+        run: exit 1
