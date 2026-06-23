@@ -58,6 +58,8 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
+    
+ 
 
     // ==================== TEST CONFIGURATION ====================
 
@@ -105,10 +107,12 @@ export default defineConfig({
         trace: 'on-first-retry',
 
         // ✅ Run headless — required for GitHub Actions (no display)
-        headless: true,
+        headless: false,
 
         // ✅ Fixed viewport for CI — null causes issues on GitHub Actions
-        viewport: { width: 1920, height: 1080 },
+        //viewport: { width: 1920, height: 1080 },
+        viewport:null,
+
 
         // ✅ Increased navigation timeout for CI environment
         navigationTimeout: 120000,
@@ -120,11 +124,10 @@ export default defineConfig({
         launchOptions: {
             slowMo: 0,
             args: [
-                '--no-sandbox',              // ✅ required for Linux/GitHub Actions
-                '--disable-setuid-sandbox',  // ✅ required for Linux/GitHub Actions
-                '--disable-dev-shm-usage',   // ✅ prevents memory issues on GitHub Actions
-                '--disable-gpu',             // ✅ required for headless on CI
-                '--window-size=1920,1080'    // ✅ fixed window size for CI
+            '--start-maximized',        
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
             ]
         },
     },
