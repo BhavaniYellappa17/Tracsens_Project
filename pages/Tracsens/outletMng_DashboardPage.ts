@@ -1,0 +1,264 @@
+import { Page,expect } from "@playwright/test";
+import { OutletMenuNav } from "../outletMenuNavigation";
+
+// Used to read files, check if file exists, get file details
+import * as fs from 'fs';
+// Used to join folder paths correctly for any OS
+import * as path from 'path';
+//Used to get system information
+import * as os from 'os';
+
+export class DashboardPage{
+  /**
+     * OutletMenuNav instance — handles sidebar menu and submenu navigation
+     * Reused from outletMenuNavigation.ts to avoid code duplication
+     */
+  outletMenuNav: OutletMenuNav;
+  
+    constructor(public page:Page){
+      //Reuse OutletMenuNav for sidebar navigation
+        this.outletMenuNav = new OutletMenuNav(page);
+        
+    }
+
+    //**************Locators ****************/
+
+    // Sidebar main menu items (Home, Administration,outletmanagment,product managemnet )
+     homePageMenuItems='//a[contains(@class,"sidebar-link")]//span';
+
+     // Submenu items under OutletManagement (Outlets)
+     outletSubMenu='(//a/span[@class="lan-5"])[1]';
+     
+     //Outlet Management page header (used for validation)
+     outletMngPage='//h1[text()="Outlet Management"]';
+
+     //Search input field for outlet name
+     searchByOutletNames='//input[@placeholder="Search by name, external id, or location..."]';
+
+     //Created date filter dropdown
+     filter='//select[@class="input-created-filter-type form-select"]';
+
+     //All dropdown options under created date filter
+     selectOptions='//select[@class="input-created-filter-type form-select"]/option';
+
+     //Outlet name link to click and navigate to outlet details
+     outletNameText='//a[@class="outlet-name-text mb-1"]';
+
+     //AuditsLink
+     audits='(//span[@class="tab-label"])[2]';
+
+    //Each row in the Audit ID table
+     auditId='//div[@class="sc-dYwGCk knNOUg rdt_TableRow"]';
+
+     //Next button for pagination
+     nextButton='//span[text()="Next"]';
+
+    //View Performance Dashboard button in each audit row
+    viewDashboard='//button[@title="View Performance Dashboard"]';
+
+    //Unique SKUs count value (e.g., 27)
+    uniqueSkusValue='//div[text()="Unique SKUs"]/preceding-sibling::div';
+
+    //Detected SKUs count value (e.g., 42)
+    detectedSkusValue='//div[text()="Detected SKUs"]/preceding-sibling::div';
+
+    //Diageo value under Unique SKUs (e.g., diageo: 19)
+    uniqueSkusDiageo='//div[text()="Unique SKUs"]/following-sibling::div[@class="audit-stat-sublabel"]';
+    
+    //Diageo value under Detected SKUs (e.g., diageo: 30)
+    detectedSkusDiageo='//div[text()="Detected SKUs"]/following-sibling::div[@class="audit-stat-sublabel"]';
+
+    // Retention Rate percentage value (e.g., 14%)
+    retentionRateValue='//div[text()="Retention Rate"]/preceding-sibling::div';
+
+    
+    //Missing SKUs text content next to each missing SKU image
+    missingSkus='//div[@class="audit-missing-sku-img-wrap"]/following-sibling::div';
+
+    //Export PDF button inside the dashboard modal
+    exportButton='//button[text()="Export PDF"]';
+
+    //Close button to close the dashboard modal
+    close='//button[@aria-label="Close"]';
+
+    //Audit Id Column Header(used for validation) 
+    verifyAuditId='//div[text()="Audit ID"]';
+
+    /**
+     * Function Name: getDashboardValues
+     * Author: Lakshmi
+     * Created Date: 2026-05-26
+     * Description: This function performs complete dashboard page operations by:
+     *
+     * Navigation Steps:
+     * 1. Reuses OutletMenuNav to navigate to Outlet Management page
+     *    (handles sidebar menu and submenu clicks internally)
+     *
+     * Search and Filter Steps:
+     * 2. Fills search box with outlet name
+     * 3. Opens date filter dropdown and selects given filter
+     * 4. Clicks outlet name to navigate to outlet details page
+     * 5. Clicks Audits tab to navigate to audit section
+     *
+     * Audit Search Steps:
+     * 6. Loops through all rows on current page to find matching Audit ID
+     * 7. Scrolls to matched row and clicks View Performance Dashboard button
+     * 8. If not found on current page, checks if Next button is disabled
+     * 9. If Next is disabled logs Audit ID not found and stops
+     * 10. If Next is enabled clicks Next and repeats search
+     *
+     * Dashboard Values Extraction Steps:
+     * 11. Fetches and logs Unique SKUs count value
+     * 12. Fetches and logs Detected SKUs count value
+     * 13. Waits for diageo values to fully load
+     * 14. Fetches and logs Unique SKUs diageo value
+     * 15. Fetches and logs Detected SKUs diageo value
+     * 16. Fetches and logs Retention Rate percentage value
+     *
+     * Missing SKUs Steps:
+     * 17. Fetches all missing SKU items
+     * 18. If no missing SKUs found logs "No Missing SKUs found"
+     * 19. If missing SKUs found logs count and complete list
+     *
+     * PDF Export Steps:
+     * 20. Deletes any existing PDF files for this Audit ID from Downloads folder
+     * 21. Clicks Export PDF button and waits for download event
+     * 22. Saves downloaded PDF to Downloads folder
+     * 23. Verifies PDF file exists with correct name and timestamp
+     * 24. Closes the dashboard modal after processing
+     *
+     * @param menu             - Main menu name to click (e.g., "Outlet Management")
+     * @param subMenu          - Sub menu name to click (e.g., "Outlets")
+     * @param searchOutletName - Outlet name to search (e.g., "Madhuloka liquor")
+     * @param filter           - Filter value to select (e.g., "All time")
+     * @param targetAuditId    - Audit ID to search for (e.g., "AUD-1767761954121-95a38e24")
+     *
+     * Example Usage:
+     * await getDashboardValues('Outlet Management', 'Outlets', 'Madhuloka liquor', 'All time', 'AUD-123');
+     */
+    async getDashboardValues(menu:string,subMenu:string,searchOutletName:string,filter:string,targetAuditId:string){
+      //Reuse OutletMenuNav to navigate to Outlet Management page
+        //This handles sidebar menu click and submenu click internally
+      await this.outletMenuNav.outletMenuAndSubMenu(menu, subMenu);
+      await this.page.locator(this.searchByOutletNames).fill(searchOutletName);
+        await this.page.locator(this.filter).click();
+        const options = await this.page.locator(this.selectOptions).allTextContents();
+        console.log(options);
+        await this.page.locator(this.filter).selectOption({ label: filter });
+        await this.page.locator(this.outletNameText).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+       // Get all outlet names after search
+       const results = await this.page.locator(this.outletNameText).allTextContents();
+
+// Check if searched outlet exists
+const match = results.find(name =>name.trim().toLowerCase() === searchOutletName.trim().toLowerCase());
+if (match) {
+    console.log(`Outlet found: ${match}`);
+
+    // Click exact matching outlet
+    await this.page.locator(`//a[text()='${match}']`).click();
+
+} else {
+    console.log(`Outlet "${searchOutletName}" not found`);
+}
+
+      await this.page.locator(this.audits).click();
+      await this.page.waitForTimeout(2000);
+        while (true) {
+    // Get all rows on the current page
+      
+    const rows = this.page.locator(this.auditId);
+    await rows.waitFor({ state: 'visible', timeout: 15000 }).catch(() => {});
+    const rowCount = await rows.count();
+    //let found = false;
+   //Iterate through each row to match the Audit ID
+    for (let i = 0; i < rowCount; i++) {
+      const row = rows.nth(i);
+      const text = await row.textContent();
+     //If the Audit ID matches, scroll to it and click View button
+      if (text?.includes(targetAuditId)) {
+        await row.scrollIntoViewIfNeeded();
+        await row.locator(this.viewDashboard).click();
+        console.log("\n========== DASHBOARD VALUES ==========");
+        
+        const uniqueSkus=await this.page.locator(this.uniqueSkusValue).textContent();
+        console.log("UniqueSkusValue:",uniqueSkus);
+
+        
+        const detectedSkus=await this.page.locator(this.detectedSkusValue).textContent();
+        console.log("detectedSkusValue:",detectedSkus);
+        
+        //const uniqueSkus_Diageo = await this.page.locator('div:has-text("diageo")').nth(0).innerText();
+        //console.log(uniqueSkus_Diageo);
+        await this.page.waitForTimeout(5000);
+        const uniqueSkus_Diageo = await this.page.locator(this.uniqueSkusDiageo).textContent();
+        console.log("UniqueSkusDiageo:",uniqueSkus_Diageo);
+
+        const detectedSkus_Diageo=await this.page.locator(this.detectedSkusDiageo).textContent();
+        console.log("detectedSkusDiageo:",detectedSkus_Diageo);
+
+        const retentionRate=await this.page.locator(this.retentionRateValue).textContent();
+        console.log("retentionRateValue:",retentionRate);
+
+        const missingSkus = await this.page.locator(this.missingSkus).allTextContents();
+        // Check if missing skus are empty or not
+        if (missingSkus.length === 0) {
+        console.log("No Missing SKUs found");
+        } 
+        else 
+      {
+          console.log(`Missing SKUs found (${missingSkus.length}):`);
+          console.log(missingSkus);
+          
+      }
+        
+        console.log("\n========== EXPORT DASHBOARD PDF==========");
+        // Step 1: Delete old files
+         const downloadsFolder = path.join(os.homedir(), 'Downloads');
+         fs.readdirSync(downloadsFolder).filter((file: string) => file.includes(targetAuditId) && file.endsWith('.pdf')).forEach((file: string) => {
+         fs.unlinkSync(path.join(downloadsFolder, file));
+         console.log(`Old file deleted: ${file}`);
+        });
+
+          // Step 2: Click Export PDF and wait for download
+          const [download] = await Promise.all([
+          this.page.waitForEvent('download'),
+          this.page.locator(this.exportButton).click()
+         ]);
+
+          // Step 3: Save file
+          const fileName = await download.suggestedFilename();
+          const savePath = path.join(downloadsFolder, fileName);
+          console.log(savePath);
+          await download.saveAs(savePath);
+
+         // Step 4: Verify file
+        if (fileName.includes(targetAuditId) && fileName.endsWith('.pdf')) {
+             const downloadedTime = fs.statSync(path.join(downloadsFolder, fileName)).mtime;
+             //const date = `${String(downloadedTime.getDate()).padStart(2,'0')}-${String(downloadedTime.getMonth()+1).padStart(2,'0')}-${downloadedTime.getFullYear()}`;
+             const time = `${String(downloadedTime.getHours()).padStart(2,'0')}:${String(downloadedTime.getMinutes()).padStart(2,'0')}:${String(downloadedTime.getSeconds()).padStart(2,'0')}`;
+             console.log(`PDF found: ${fileName}:${time}`);
+        } 
+        else {
+               console.log(`PDF not found for: ${targetAuditId}`);
+            }
+        await this.page.locator(this.close).click();
+        return;
+    }
+  }
+  const nextBtn = this.page.locator(this.nextButton);
+
+    //check if disabled
+    if (await nextBtn.isDisabled()) {
+      console.log(`Audit ID not found: ${targetAuditId}`);
+      break;
+    }
+
+    await nextBtn.click();
+
+    
+  }
+}
+}
+    
+   
+

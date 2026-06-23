@@ -1,150 +1,144 @@
-import { defineConfig, devices } from '@playwright/test';
+// import { defineConfig } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+// export default defineConfig({
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
+//     testDir: './tests/tracsensTest',
+
+//     // Global timeout per test
+//     timeout: 180000,
+
+//     expect: {
+//         timeout: 10000,
+//     },
+
+//     // Run spec files one at a time
+//     fullyParallel: false,
+//     workers: 1,
+//     retries: 0,
+//     forbidOnly: !!process.env.CI,
+
+//     reporter: [
+//         ['list'],
+//         ['html'],
+//         ['monocart-reporter', {
+//             name: 'Tracsens Report',
+//             outputFile: './monocart-report/index.html'
+//         }]
+//     ],
+
+//     use: {
+//         baseURL: 'https://prod.tracsens.com/',
+//         screenshot: 'only-on-failure',
+//         video: 'retain-on-failure',
+//         trace: 'on-first-retry',
+//         headless: false,
+//         viewport: null,
+//         launchOptions: {
+//             slowMo: 1000,
+//             args: ['--start-maximized']
+//         },
+//     },
+
+//     projects: [
+//         // {
+//         //     name: 'chromium',
+//         //     use: {
+//         //         browserName: 'chromium',
+//         //     },
+//         // },
+//         {
+//             name: 'firefox',
+//             use: {
+//                 browserName: 'firefox',
+//             },
+//         },
+//     ],
+// });
+
+import { defineConfig } from '@playwright/test';
+
 export default defineConfig({
-  // Test folder
-  testDir: './tests',
+    // Triggers after ALL tests finish — sends email report
+    //globalTeardown: require.resolve('./globalTeardown.ts'),
 
-  // Global timeout
-  timeout: 60000,
-  
+    // ==================== TEST CONFIGURATION ====================
 
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+    // Directory where test files are located
+    testDir: './tests/tracsensTest',
 
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
+    // ✅ Increased to 5 minutes for CI environment
+    timeout: 300000,
 
-  // Number of workers to run parallel
-  workers: 1,
-
-  /* Retry on CI only */
-
-  retries:0, //process.env.CI ? 2 : 0,
-
-  /* Opt out of parallel tests on CI. */
-  //workers: process.env.CI ? 1 : undefined,
-
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-//  reporter: [
-//   ['html'],
-//   ['./utils/report.ts']
-// ],
-// Reporter
-  
-  reporter: [
-    ['list'],
-    ['html'],
-    ['monocart-reporter', {
-        name: 'Tracsens Report',
-        outputFile: './monocart-report/index.html'
-    }]
-],
-  /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
-  use: {
- 
-  /* Base URL to use in actions like `await page.goto('')`. */
-  baseURL: 'https://prod.tracsens.com',
-      // Screenshots
-        screenshot: 'only-on-failure',        // 'on' | 'off' | 'only-on-failure'
-
-        // Videos
-        video: 'on',             // 'on' | 'off' | 'only-on-failure' | 'retain-on-failure'
-
-        // Trace
-        //trace: 'on',
- 
-  /* Browser visible */
-  headless: false,
- 
-  /* Maximize browser */
- //viewport: { width: 1920, height: 1080 },
- viewport:null,
-
-
-  
- 
-  launchOptions: {
-    //slowMo: 3000,
-    args: ['--start-maximized']
-  },
- 
-  /* Collect trace when retrying the failed test */
-  trace: 'on-first-retry',
-},
- 
-  /* Configure projects for major browsers */
-  projects: [
-  {
-    name: 'chromium',
-    use: {
-      browserName: 'chromium',
-      //viewport: { width: 1920, height: 1080 },
-      viewport:null,
-      launchOptions: {
-        args: ['--start-maximized'],
-      },
+    // ✅ Increased expect timeout for CI
+    expect: {
+        timeout: 30000,
     },
-  }
-  // {
-  //   name: 'firefox',
-  //   use: {
-  //     browserName: 'firefox',
-  //     viewport: { width: 1920, height: 1080 },
-  //     launchOptions: {
-  //       args: ['--start-maximized'],
-  //     },
-  //   },
-  // },
 
-],
-  
+    // Run tests sequentially — one at a time
+    fullyParallel: false,
+    workers: 1,
+    retries: 0,
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    // Prevent test.only from being committed to CI
+    forbidOnly: !!process.env.CI,
 
-    //  {
-    //    name: 'webkit',
-    //    use: { ...devices['Desktop Safari'] },
-    //  },
+    // ==================== REPORTERS ====================
+    reporter: [
+        ['list'],
+        ['html'],
+        ['monocart-reporter', {
+            name: 'Tracsens Report',
+            outputFile: './monocart-report/index.html'
+        }]
+    ],
 
-    /* Test against mobile viewports. */
-    //  {
-    //    name: 'Mobile Chrome',
-    //    use: { ...devices['Pixel 5'] },
-    //  },
-    //  {
-    //   name: 'Mobile Safari',
-    //    use: { ...devices['iPhone 12'] },
-    //  },
+    // ==================== BROWSER CONFIGURATION ====================
+    use: {
+        // Base URL for all page.goto() calls
+        baseURL: 'https://prod.tracsens.com/',
 
-    /* Test against branded browsers. */
-  //    {
-  //      name: 'Microsoft Edge',
-  //      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-  //    },
-  //    {
-  //     name: 'Google Chrome',
-  //     use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-  //  },
-  
+        // Screenshot only on test failure
+        screenshot: 'only-on-failure',
 
-  /* Run your local dev server before starting the tests */
-  //  webServer: {
-  //    command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  //  },
+        // Video recording off
+        video: 'retain-on-failure',
+
+        // Trace only on first retry
+        trace: 'on-first-retry',
+
+        // ✅ Run headless — required for GitHub Actions (no display)
+        headless: false,
+
+        // ✅ Fixed viewport for CI — null causes issues on GitHub Actions
+        //viewport: { width: 1920, height: 1080 },
+        viewport:null,
+
+
+        // ✅ Increased navigation timeout for CI environment
+        navigationTimeout: 120000,
+
+        // ✅ Increased action timeout for CI environment
+        actionTimeout: 60000,
+
+        // ✅ Launch options for GitHub Actions Linux environment
+        launchOptions: {
+            slowMo: 0,
+            args: [
+            '--start-maximized',        
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            ]
+        },
+    },
+
+    // ==================== PROJECTS ====================
+    projects: [
+        {
+            name: 'chromium',
+            use: {
+                browserName: 'chromium',
+            },
+        },
+    ],
 });

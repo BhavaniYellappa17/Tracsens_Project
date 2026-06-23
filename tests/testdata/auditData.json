@@ -1,0 +1,203 @@
+{
+  "menuAndSubMenuTestCases":[
+  {
+    "testCase": "Valid Case",
+    "menu": "Audit Management",
+    "subMenu": "Audits"
+    
+  },
+  {
+    "testCase": "Invalid Menu Name",
+    "menu": "",
+    "subMenu": "Audits"
+  },
+  {
+    "testCase": "Invalid SubMenu Name",
+    "menu": "Audit Management",
+    "subMenu": "Outlets"
+  }
+  
+],
+"getAllOutletNames_AuditMngTestCases":[
+    {
+    "testCase": "Valid Case - Last 3 months",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"All status",
+    "filter":"Last 3 months"
+    
+  },
+  {
+    "testCase": "Valid Case - Current week ",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"Completed",
+    "filter":"Current week"
+    
+  },
+  {
+    "testCase": "Valid Case -Last week",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"In Progress",
+    "filter":"Last week"
+    
+  },
+
+  {
+    "testCase": "Valid Case-Current month",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"Pending",
+    "filter":"Current month"
+    
+  },
+  {
+    "testCase": "Valid Case-Last month",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"All status",
+    "filter":"Last month"
+    
+  },
+  
+  {
+    "testCase": "Empty Status",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"",
+    "filter":"Today"
+  },
+  {
+    "testCase": "Empty Filter",
+    "menu": "Audit Management",
+    "subMenu": "Audits",
+    "status":"All status",
+    "filter":""
+  }
+],
+"searchoutletName_AuditMngTestCase": 
+[
+    {
+      "testCase": "1)Valid Search and Filter",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "Sunil Chauhan Bar",
+      "status":"All status",
+      "filter":"Last month"
+    },
+    {
+      "testCase": "2)Invalid Outlet Name",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "XYZ123Outlet",
+      "status":"Pending",
+      "filter":"Current month"
+    },
+    {
+      "testCase": "3)Empty Outlet Name",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "",
+      "status":"All status",
+      "filter":"Last 3 months"
+    },
+    {
+      "testCase": "4)Valid Outlet with Different Status and Filter",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "KUNDAN CHEETA --2000379",
+      "status":"Completed",
+      "filter":"Last month"
+    
+    },
+    {
+      "testCase": "5)Invalid Outlet Name",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "KUNDAN CHEETA",
+      "status":"All status",
+      "filter":"Last week"
+    }
+],
+"outletInformationTestCase": [
+    {
+      "testCase": "Search Outlet with Valid Name and Filter",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "KUNDAN CHEETA --2000379",
+      "status":"Completed",
+      "filter":"Last month"
+    }
+  
+  ] ,
+  "auditPageTestCase": [
+    {
+      "testCase": "Audit Page Validation with Valid Search and Filters",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "ANTIM KUMAR --2000286",
+      "status":"All status",
+      "filter": "Last 3 months",
+      "targetAuditId": "AUD-1779340258016-12caf8a6",
+      "selectCategory": "All Categories"
+    },
+    {
+      "testCase": "2)Invalid Outlet Name",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "XYZ123Outlet",
+      "status":"Pending",
+      "filter":"Current month",
+      "targetAuditId": "AUD-1779340258016-12caf8a6",
+      "selectCategory": "All Categories"
+    },
+    {
+      "testCase": "3)Empty AuditId",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "Outlet012",
+      "status":"All status",
+      "filter":"Last month",
+      "targetAuditId": "",
+      "selectCategory": "All Categories"
+    },
+    {
+      "testCase": "4)Valid Outlet with Different Status and Filter and Invalid AuditID",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "KUNDAN CHEETA --2000379",
+      "status":"Completed",
+      "filter":"Last month",
+      "targetAuditId": "AUD-1779340258016-12caf8a6",
+      "selectCategory": "All Categories"
+    
+    },
+    {
+      "testCase": "5)Invalid Outlet Name",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "KUNDAN CHEETA",
+      "status":"All status",
+      "filter":"Last week",
+      "targetAuditId": "AUD-1779340258016-12caf8a6",
+      "selectCategory": "All Categories"
+    }
+],
+"getDashboardValuesTestCase": [
+    {
+      "testCase": "Verify Dashboard Values for Valid Outlet Search with Filter, Audit ID and Category",
+      "menu": "Audit Management",
+      "subMenu": "Audits",
+      "searchOutletName": "ANTIM KUMAR --2000286",
+      "status":"All status",
+      "filter": "Last 3 months",
+      "targetAuditId": "AUD-1779340258016-12caf8a6",
+      "selectCategory": "All Categories"
+    }
+  ] 
+    
+  
+  
+
+}

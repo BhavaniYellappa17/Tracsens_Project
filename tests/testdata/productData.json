@@ -1,0 +1,78 @@
+[
+  {
+    "menu": "Product Management",
+    "ProductSubMenu": "Products",
+    "imagePath": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png",
+    "sproductName": "BAGPIPER DELUXEE WHISKY",
+    "sdetailedDescription": "BAGPIPER DELUXEE WHISKY",
+    "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_359ML",
+    "sstandardPrice": "1510",
+    "editProdName": "BAGPIPER DELUXEE WHISKY",
+    "negativeProduct": [
+      {
+        "testCase": "Empty product name",
+        "sproductName": "",
+        "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+      },
+      {
+        "testCase": "Empty SKU",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+      },
+      {
+        "testCase": "Empty price",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
+        "sstandardPrice": "",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+      },
+      {
+        "testCase": "Negative price",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "BAGPIPER_DELUXEE_WHISKY_350ML",
+        "sstandardPrice": "-100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+      },
+      {
+        "testCase": "Price with letters",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_001",
+        "sstandardPrice": "abc",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+      },
+      {
+        "testCase": "Duplicate SKU",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "BAGPIPER DELUXEE WHISKY",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/hd-jack-daniels-whiskey-bottle-png-704081694866032wnubfczjh8.png"
+      },
+      {
+        "testCase": "Invalid image type xlsx",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_002",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": "tests/testdata/images/Tracsens_TestScenarios 4.xlsx"
+      },
+      {
+        "testCase": "No image uploaded",
+        "sproductName": "Test Product",
+        "sstockKeepingUnit": "TEST_SKU_002",
+        "sstandardPrice": "100",
+        "sdetailedDescription": "Test Description",
+        "imageFile": ""
+      }
+    ]
+  }
+]
