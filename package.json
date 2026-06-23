@@ -19,6 +19,7 @@
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@microsoft/microsoft-graph-types": "^2.43.1",
     "@playwright/test": "^1.60.0",
     "@types/archiver": "^8.0.0",
     "@types/node": "^25.6.0",
@@ -27,9 +28,12 @@
     "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "@azure/msal-node": "^5.2.5",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "archiver": "^8.0.0",
     "dotenv": "^17.4.2",
     "exceljs": "^4.4.0",
+    "isomorphic-fetch": "^3.0.0",
     "nodemailer": "^9.0.1",
     "xlsx": "^0.18.5"
   }

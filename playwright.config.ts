@@ -58,8 +58,8 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-    
- 
+    // Triggers after ALL tests finish — sends email report
+    //globalTeardown: require.resolve('./globalTeardown.ts'),
 
     // ==================== TEST CONFIGURATION ====================
 
