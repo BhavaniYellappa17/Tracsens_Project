@@ -139,4 +139,4 @@ async function sendReportEmail() {
     console.log("=== EMAIL REPORT END ===");
 }
 
-sendReportEmail();
+export default sendReportEmail;
