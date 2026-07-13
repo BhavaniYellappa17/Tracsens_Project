@@ -106,7 +106,7 @@ export default defineConfig({
         trace: 'on-first-retry',
 
         // ✅ Run headless — required for GitHub Actions (no display)
-        headless: false,
+        headless: true,
 
         // ✅ Fixed viewport for CI — null causes issues on GitHub Actions
         //viewport: { width: 1920, height: 1080 },
