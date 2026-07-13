@@ -1,79 +1,142 @@
-//Imports the nodemailer library — the tool that actually sends emails using SMTP.
-import nodemailer from 'nodemailer';
-import fs from 'fs';
-import path from 'path';
-import dotenv from 'dotenv';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-const archiverModule = require('archiver');
-const ZipArchive = archiverModule.ZipArchive;
+console.log("ℹ️ EMAIL_USER      :", process.env.EMAIL_USER);
+console.log("ℹ️ RECIPIENTS      :", process.env.REPORT_RECIPIENTS);
+console.log("ℹ️ AZURE_TENANT_ID :", process.env.AZURE_TENANT_ID ? "✅ loaded" : "❌ missing");
+console.log("ℹ️ AZURE_CLIENT_ID :", process.env.AZURE_CLIENT_ID ? "✅ loaded" : "❌ missing");
+console.log("ℹ️ AZURE_SECRET    :", process.env.AZURE_CLIENT_SECRET ? "✅ loaded" : "❌ missing");
 
-// ==================== EMAIL CONFIGURATION (OUTLOOK) ====================
-const transporter = nodemailer.createTransport({
-  host: 'smtp.office365.com',
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-  tls: {
-    ciphers: 'SSLv3',
-  },
-});
+// -------------------- STEP 1: Get Azure Token --------------------
+async function getAccessToken(): Promise<string> {
+    console.log("ℹ️ Fetching Azure access token...");
 
-// ==================== ZIP THE REPORT FOLDER ====================
-function zipReport(sourceDir: string, outPath: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(outPath);
-    const archive = new ZipArchive({ zlib: { level: 9 } });
+    const url = `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}/oauth2/v2.0/token`;
 
-    output.on('close', () => resolve());
-    archive.on('error', (err: Error) => reject(err));
+    const params = new URLSearchParams({
+        client_id:     process.env.AZURE_CLIENT_ID!,
+        client_secret: process.env.AZURE_CLIENT_SECRET!,
+        scope:         'https://graph.microsoft.com/.default',
+        grant_type:    'client_credentials'
+    });
 
-    archive.pipe(output);
-    archive.directory(sourceDir, false);
-    archive.finalize();
-  });
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString()
+    });
+
+    const data = await response.json() as {
+        access_token?: string;
+        error?: string;
+        error_description?: string
+    };
+
+    if (!data.access_token) {
+        console.log("❌ Token error       :", data.error);
+        console.log("❌ Token description :", data.error_description);
+        throw new Error(`Failed to get access token: ${data.error}`);
+    }
+
+    console.log("✅ Azure access token fetched successfully");
+    return data.access_token;
 }
 
-// ==================== SEND EMAIL FUNCTION ====================
+// -------------------- STEP 2: Send Email via Graph API --------------------
 async function sendReportEmail() {
-  const reportDir = path.join(__dirname, '../playwright-report');
-  const zipPath = path.join(__dirname, '../playwright-report.zip');
+    console.log("=== EMAIL REPORT START ===");
 
-  await zipReport(reportDir, zipPath);
+    try {
+        const reportPath = path.resolve(__dirname, '..', 'monocart-report', 'index.html');
+        console.log(`ℹ️ Report path: ${reportPath}`);
 
-  const recipients = process.env.REPORT_RECIPIENTS?.split(',') || [];
+        // ✅ No retry loop needed — this runs AFTER playwright test fully exits,
+        // so Monocart has 100% finished writing by this point, guaranteed.
+        if (!fs.existsSync(reportPath)) {
+            throw new Error(`❌ Report file not found at: ${reportPath}`);
+        }
 
-  if (recipients.length === 0) {
-    console.warn('⚠️ No recipients found in .env — email not sent');
-    return;
-  }
+        const accessToken = await getAccessToken();
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: recipients.join(','),
-    subject: `Tracsens Automation Report - ${new Date().toLocaleDateString()}`,
-    html: `
-      <h2>Tracsens Test Execution Report</h2>
-      <p>Hi Team,</p>
-      <p>Please find attached the latest automation test report.</p>
-      <p><b>Execution Date:</b> ${new Date().toLocaleString()}</p>
-      <p>Regards,<br/>Automation Team</p>
-    `,
-    attachments: [
-      {
-        filename: 'playwright-report.zip',
-        path: zipPath,
-      },
-    ],
-  };
+        const reportContent = fs.readFileSync(reportPath);
+        const reportBase64 = reportContent.toString('base64');
+        const fileName = `Tracsens_Report_${new Date().toLocaleDateString().replace(/\//g, '-')}.html`;
+        console.log("✅ Report file read successfully");
+        console.log(`📎 Report file size: ${reportContent.length} bytes`);
 
-  await transporter.sendMail(mailOptions);
-  console.log('✅ Report email sent successfully!');
+        const recipients = process.env.REPORT_RECIPIENTS!
+            .split(',')
+            .map(email => ({
+                emailAddress: { address: email.trim() }
+            }));
+
+        const emailBody = {
+            message: {
+                subject: `Tracsens Playwright Test Report — ${new Date().toLocaleDateString()}`,
+                body: {
+                    contentType: 'HTML',
+                    content: `
+                        <h2>Tracsens Playwright Automation Report</h2>
+                        <p>Hi Team,</p>
+                        <p>Please find the attached test execution report for <b>Tracsens</b>.</p>
+                        <table border="1" cellpadding="8" cellspacing="0">
+                            <tr><td><b>Project</b></td><td>Tracsens Playwright Automation</td></tr>
+                            <tr><td><b>Executed On</b></td><td>${new Date().toLocaleString()}</td></tr>
+                            <tr><td><b>Browser</b></td><td>Chromium (Chrome)</td></tr>
+                            <tr><td><b>Environment</b></td><td>https://prod.tracsens.com</td></tr>
+                        </table>
+                        <br/>
+                        <p>Please find the full HTML report attached.</p>
+                        <br/>
+                        <p>Regards,</p>
+                        <p>Lakshmi</p>
+                        <p>QA Automation Engineer</p>
+                        <p>Matryxsoft</p>
+                    `
+                },
+                toRecipients: recipients,
+                attachments: [
+                    {
+                        '@odata.type': '#microsoft.graph.fileAttachment',
+                        name: fileName,
+                        contentType: 'text/html',
+                        contentBytes: reportBase64
+                    }
+                ]
+            },
+            saveToSentItems: true
+        };
+
+        console.log(`ℹ️ Sending email to: ${process.env.REPORT_RECIPIENTS}`);
+
+        const sendUrl = `https://graph.microsoft.com/v1.0/users/${process.env.EMAIL_USER}/sendMail`;
+
+        const sendResponse = await fetch(sendUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(emailBody)
+        });
+
+        if (sendResponse.ok) {
+            console.log("✅ Email sent successfully via Microsoft Graph API!");
+        } else {
+            const errorData = await sendResponse.json() as { error?: { message?: string; code?: string } };
+            console.log("❌ Graph API error code    :", errorData?.error?.code);
+            console.log("❌ Graph API error message :", errorData?.error?.message);
+        }
+
+    } catch (error) {
+        if (error instanceof Error) {
+            console.log(`❌ Email sending failed: ${error.message}`);
+        }
+    }
+
+    console.log("=== EMAIL REPORT END ===");
 }
 
-sendReportEmail().catch((err: Error) => {
-  console.error('❌ Failed to send report email:', err);
-});
+sendReportEmail();
