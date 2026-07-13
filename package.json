@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:e2e"     : "playwright test --config=playwright.suites.config.ts",
-    "test:smoke"   : "playwright test --config=playwright.suites.config.ts --project='Smoke Suite'",
-    "test:auth"    : "playwright test --config=playwright.suites.config.ts --project='Auth Suite'",
-    "test:admin"   : "playwright test --config=playwright.suites.config.ts --project='Admin Suite'",
-    "test:product" : "playwright test --config=playwright.suites.config.ts --project='Product Suite'",
-    "test:outlet"  : "playwright test --config=playwright.suites.config.ts --project='Outlet & Audit Suite'"
+    "test:e2e": "playwright test --config=playwright.suites.config.ts",
+    "test:smoke": "playwright test --config=playwright.suites.config.ts --project='Smoke Suite'",
+    "test:auth": "playwright test --config=playwright.suites.config.ts --project='Auth Suite'",
+    "test:admin": "playwright test --config=playwright.suites.config.ts --project='Admin Suite'",
+    "test:product": "playwright test --config=playwright.suites.config.ts --project='Product Suite'",
+    "test:outlet": "playwright test --config=playwright.suites.config.ts --project='Outlet & Audit Suite'",
+    "test": "playwright test",
+    "send-report": "ts-node utils/sendReportEmail.ts",
+    "test:report": "npm run test; npm run send-report"
   },
   "keywords": [],
   "author": "",
@@ -17,11 +20,17 @@
   "type": "commonjs",
   "devDependencies": {
     "@playwright/test": "^1.60.0",
+    "@types/archiver": "^8.0.0",
     "@types/node": "^25.6.0",
-    "monocart-reporter": "^2.11.2"
+    "@types/nodemailer": "^8.0.1",
+    "monocart-reporter": "^2.11.2",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
+    "archiver": "^8.0.0",
+    "dotenv": "^17.4.2",
     "exceljs": "^4.4.0",
+    "nodemailer": "^9.0.1",
     "xlsx": "^0.18.5"
   }
 }
