@@ -107,10 +107,12 @@ export default defineConfig({
 
         // ✅ Run headless — required for GitHub Actions (no display)
         headless: true,
+        //headless: false,
 
         // ✅ Fixed viewport for CI — null causes issues on GitHub Actions
-        //viewport: { width: 1920, height: 1080 },
-        viewport:null,
+        viewport: { width: 1920, height: 1080 },
+        
+        //viewport:null,
 
 
         // ✅ Increased navigation timeout for CI environment
