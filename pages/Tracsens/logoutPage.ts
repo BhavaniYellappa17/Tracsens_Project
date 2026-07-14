@@ -72,8 +72,15 @@ export class LogoutPage {
         console.log("✅ Page navigation complete after logout");
 
         // Step 7: Verify logout was successful by checking login page message visibility
+        // ✅ Uses waitFor instead of an instant isVisible() check — CI runners can be
+        // slower to render than a local machine, so we give it time to actually appear.
         console.log("Step 7: Verifying logout by checking login page message visibility");
-        if (await this.page.locator(this.loginMessage).isVisible()) {
+        const isLoginMessageVisible = await this.page.locator(this.loginMessage)
+            .waitFor({ state: 'visible', timeout: 15000 })
+            .then(() => true)
+            .catch(() => false);
+
+        if (isLoginMessageVisible) {
             console.log("✅ Successfully logged out — login page message is visible");
         } else {
             console.log("❌ Logout failed — login page message is not visible");

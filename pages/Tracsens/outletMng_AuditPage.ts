@@ -227,12 +227,28 @@ if (match) {
             await this.page.locator(this.skus).click();
             const getSkus=await this.page.locator(this.allSKUs).allTextContents();
             console.log(`SKUs:`,getSkus);
+
+            // Step 1: Delete old files
+            // const downloadsFolder = path.join(os.homedir(), 'Downloads');
+            // fs.readdirSync(downloadsFolder).filter((file: string) => file.includes(targetAuditId) && file.endsWith('.pdf')).forEach((file: string) => {
+            // fs.unlinkSync(path.join(downloadsFolder, file));
+            // console.log("\n==========  EXPORT AUDIT PDF==========");
+            // console.log(`Old file deleted: ${file}`);
+            // });
+
             // Step 1: Delete old files
             const downloadsFolder = path.join(os.homedir(), 'Downloads');
+
+            // ✅ Ensure the folder exists before reading it — CI runners (Linux) won't have
+            // a Downloads folder unless something has already downloaded into it.
+            if (!fs.existsSync(downloadsFolder)) {
+                fs.mkdirSync(downloadsFolder, { recursive: true });
+            }
+
             fs.readdirSync(downloadsFolder).filter((file: string) => file.includes(targetAuditId) && file.endsWith('.pdf')).forEach((file: string) => {
-            fs.unlinkSync(path.join(downloadsFolder, file));
-            console.log("\n==========  EXPORT AUDIT PDF==========");
-            console.log(`Old file deleted: ${file}`);
+                fs.unlinkSync(path.join(downloadsFolder, file));
+                console.log("\n==========  EXPORT AUDIT PDF==========");
+                console.log(`Old file deleted: ${file}`);
             });
         
             // Step 2: Click Export PDF and wait for download
