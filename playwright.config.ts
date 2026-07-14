@@ -58,7 +58,7 @@
 import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
-    globalTeardown: require.resolve('./utils/sendReportEmail.ts'),
+    
 
     // ==================== TEST CONFIGURATION ====================
 
