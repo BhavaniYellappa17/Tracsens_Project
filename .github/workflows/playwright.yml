@@ -111,6 +111,11 @@ jobs:
         continue-on-error: true
         env:
           CI: true
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          REPORT_RECIPIENTS: ${{ secrets.REPORT_RECIPIENTS }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
 
       # ✅ Upload Monocart Report
       - name: Upload Monocart Report
