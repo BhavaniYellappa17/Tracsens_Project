@@ -83,8 +83,14 @@ export class LoginPage {
         console.log("✅ Username and password inputs are valid");
 
         // Step 2: Check if login page is loaded correctly by verifying logo visibility
+        // ✅ Uses waitFor instead of an instant isVisible() check — CI runners can be
+        // slower to render/load images than a local machine, so we give it time
+        // to actually appear before deciding it's missing.
         console.log("Step 2: Checking if application logo is visible on login page");
-        const isLogoVisible = await this.page.locator(this.logo).isVisible();
+        const isLogoVisible = await this.page.locator(this.logo)
+            .waitFor({ state: 'visible', timeout: 15000 })
+            .then(() => true)
+            .catch(() => false);
         console.log(`ℹ️ Logo visible: ${isLogoVisible}`);
 
         if (isLogoVisible) {
@@ -111,8 +117,14 @@ export class LoginPage {
             console.log("✅ Wait complete");
 
             // Step 7: Verify login was successful by checking homepage title visibility
+            // ✅ Same fix applied — wait for it to appear rather than checking once instantly.
             console.log("Step 7: Verifying login success by checking homepage title");
-            if (await this.page.locator(this.homePageMessage).isVisible()) {
+            const isHomeVisibleAfterLogin = await this.page.locator(this.homePageMessage)
+                .waitFor({ state: 'visible', timeout: 15000 })
+                .then(() => true)
+                .catch(() => false);
+
+            if (isHomeVisibleAfterLogin) {
                 console.log("✅ Login was successful — homepage title 'Intelligence Center' is visible");
             } else {
                 console.log("❌ Login failed — homepage title not visible after sign in");
@@ -147,8 +159,14 @@ export class LoginPage {
         console.log("✅ Wait complete");
 
         // Step 2: Check if homepage title "Intelligence Center" is visible
+        // ✅ Same wait-based fix applied here too, for consistency across CI/local.
         console.log("Step 2: Checking visibility of homepage title 'Intelligence Center'");
-        if (await this.page.locator(this.homePageMessage).isVisible()) {
+        const isHomeVisible = await this.page.locator(this.homePageMessage)
+            .waitFor({ state: 'visible', timeout: 15000 })
+            .then(() => true)
+            .catch(() => false);
+
+        if (isHomeVisible) {
             console.log("✅ Homepage title 'Intelligence Center' is visible — user is logged in");
         } else {
             console.log("❌ Homepage title 'Intelligence Center' is not visible — login may have failed");
@@ -191,4 +209,3 @@ export class LoginPage {
         console.log("=== LOGIN TO APPLICATION FLOW END ===");
     }
 }
- 
