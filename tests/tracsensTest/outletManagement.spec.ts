@@ -1,14 +1,4 @@
-import { test,expect  } from '@playwright/test';
-import '../../hooks/hooks';
-
-// Page Object Imports
-import { OutletMenuNav } from '../../pages/outletMenuNavigation';
-import { AllOutletNames } from '../../pages/Tracsens/getOutletMng_OutletNames';
-import { OutletPage } from '../../pages/Tracsens/searchOutletNames';
-import { AuditPage } from '../../pages/Tracsens/outletMng_AuditPage';
-import { DashboardPage } from '../../pages/Tracsens/outletMng_DashboardPage';
-import { OutletInformationPage } from '../../pages/Tracsens/outletMng_outletInformationPage';
-
+import {test,expect,OutletMenuNav,AllOutletNames,OutletPage,AuditPage,DashboardPage,OutletInformationPage} from '../../utils/index';
 // Test Data
 import outletData from '../testdata/outletData.json';
 

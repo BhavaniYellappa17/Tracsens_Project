@@ -4,10 +4,7 @@
  *              including sidebar menu items, total users, products, categories, outlets, and SKU legends.
  * @module tests/Tracsens/homePage
  */
-
-import { test, expect } from '@playwright/test';
-import '../../hooks/hooks';
-import { Home_Page } from '../../pages/Tracsens/homePage';
+import { test, expect, Home_Page } from '../../utils/index';
 
 /** @type {Home_Page} Page Object Model instance for the Home Page */
 let homepage: Home_Page;
