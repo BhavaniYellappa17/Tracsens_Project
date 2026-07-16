@@ -17,9 +17,7 @@
  *  - LoginPage → handles login page interactions
  */
 
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../pages/Tracsens/loginPage';
-import loginData from '../testdata/loginData.json';
+import { test, expect, LoginPage, loginData } from '../../utils/index';
 
 // ==============================================================
 // ❌ NEGATIVE TESTS — LOGIN VALIDATION

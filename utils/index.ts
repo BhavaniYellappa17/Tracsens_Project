@@ -7,6 +7,10 @@ import '../hooks/hooks';
 // Node built-in
 export { default as path } from 'path';
 
+//Login
+export { LoginPage } from '../pages/Tracsens/loginPage';
+export { default as loginData } from '../tests/testdata/loginData.json';
+
 // Page Object Models — Home & Administration
 export { Home_Page } from '../pages/Tracsens/homePage';
 export { adminCustomerPage } from '../pages/Tracsens/adminCustomerPage';
