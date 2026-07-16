@@ -167,4 +167,66 @@ test.describe('Negative Login Tests', () => {
             console.log(`=== END: Negative Login - ${data.testCase} ===`);
         });
     }
+
+    // ==============================================================
+    //  FAILING TEST — for report/pipeline verification only
+    // ==============================================================
+
+    /**
+     * @test  Failing Test (Wrong Credentials)
+     * @description This test intentionally FAILS to verify that the reporting
+     * pipeline (Monocart report + email summary) correctly reflects failures.
+     *
+     * Wrong credentials are submitted — login correctly gets rejected by the app
+     * (same real behavior as the other negative tests above). However, the final
+     * assertion deliberately expects the WRONG outcome (redirect to dashboard),
+     * which never happens since login failed. This mismatch causes Playwright
+     * to mark the test as FAILED.
+     *
+     * Remove or skip this test once report verification is complete —
+     * it is not a real validation of app behavior.
+     */
+    test('Negative Login - Demo Failing Test (Wrong Credentials)', async ({ page }) => {
+
+        test.setTimeout(60000);
+
+        console.log(`\n========================================`);
+        console.log(`=== START: Demo Failing Test ===`);
+        console.log(`========================================`);
+
+        // Navigate to login page
+        console.log('Step 1: Navigating to login page');
+        await page.goto('https://prod.tracsens.com/login', {
+            waitUntil: 'domcontentloaded',
+            timeout: 30000
+        });
+        await page.waitForLoadState('networkidle');
+        console.log('✅ Navigated to login page');
+
+        // Fill genuinely wrong credentials
+        console.log('Step 2: Filling wrong credentials');
+        const usernameField = page.locator('//input[@type="text"]');
+        await usernameField.waitFor({ state: 'visible', timeout: 10000 });
+        await usernameField.fill('wronguser@test.com');
+
+        const passwordField = page.locator('//input[@type="password"]');
+        await passwordField.fill('WrongPassword123');
+        console.log('✅ Wrong credentials filled');
+
+        // Click Sign In
+        console.log('Step 3: Clicking Sign In button');
+        await page.locator('//button[text()="Sign In"]').click();
+        await page.waitForLoadState('networkidle');
+        await page.waitForTimeout(2000);
+        console.log('✅ Sign In clicked — login expected to fail');
+
+        //  Intentionally WRONG assertion:
+        // Real behavior: login fails, user stays on /login page.
+        // This assertion incorrectly expects redirection to /dashboard,
+        // which will NOT happen — so this test will FAIL as intended.
+        console.log('Step 4: Asserting (intentionally incorrect) redirect to dashboard');
+        await expect(page).toHaveURL(/.*dashboard/, { timeout: 5000 });
+
+        console.log(`=== END: Demo Failing Test ===`);
+    });
 });
