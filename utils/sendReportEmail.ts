@@ -150,31 +150,26 @@ async function sendReportEmail() {
                                 </p>
                             </div>
  
-                            <!-- Stat Cards Row -->
+                           <!-- Stat Cards Row -->
                             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 28px;">
                                 <tr>
-                                    <td width="24%" align="center" style="background-color: #f7f9fc; border-radius: 8px; padding: 20px 8px;">
+                                    <td width="32%" align="center" style="background-color: #f7f9fc; border-radius: 8px; padding: 20px 8px;">
                                         <div style="font-size: 28px; font-weight: 800; color: #1a2b4c;">${summary.total}</div>
                                         <div style="font-size: 12px; font-weight: 700; color: #5a6573; margin-top: 6px; letter-spacing: 0.5px;">TOTAL TESTCASE</div>
                                     </td>
                                     <td width="2%"></td>
-                                    <td width="24%" align="center" style="background-color: #eaf7ed; border-radius: 8px; padding: 20px 8px;">
+                                    <td width="32%" align="center" style="background-color: #eaf7ed; border-radius: 8px; padding: 20px 8px;">
                                         <div style="font-size: 28px; font-weight: 800; color: #1e7e34;">${summary.passed}</div>
                                         <div style="font-size: 12px; font-weight: 700; color: #28a745; margin-top: 6px; letter-spacing: 0.5px;">PASSED</div>
                                     </td>
                                     <td width="2%"></td>
-                                    <td width="24%" align="center" style="background-color: #fdeded; border-radius: 8px; padding: 20px 8px;">
+                                    <td width="32%" align="center" style="background-color: #fdeded; border-radius: 8px; padding: 20px 8px;">
                                         <div style="font-size: 28px; font-weight: 800; color: #a71d2a;">${summary.failed}</div>
                                         <div style="font-size: 12px; font-weight: 700; color: #dc3545; margin-top: 6px; letter-spacing: 0.5px;">FAILED</div>
                                     </td>
-                                    <td width="2%"></td>
-                                    <td width="24%" align="center" style="background-color: #fff8ec; border-radius: 8px; padding: 20px 8px;">
-                                        <div style="font-size: 28px; font-weight: 800; color: #b8860b;">${summary.flaky}</div>
-                                        <div style="font-size: 12px; font-weight: 700; color: #f0ad4e; margin-top: 6px; letter-spacing: 0.5px;">FLAKY</div>
-                                    </td>
                                 </tr>
                             </table>
- 
+                            
                             <!-- Pass Rate Bar -->
                             <div style="margin-bottom: 28px;">
                                 <table width="100%" cellpadding="0" cellspacing="0">
