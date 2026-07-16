@@ -48,6 +48,32 @@ function calculatePassRate(summary: TestSummary): string {
     if (summary.total === 0) return "0.0";
     return ((summary.passed / summary.total) * 100).toFixed(1);
 }
+
+// ✅ Helper: Get current date/time formatted in IST (Asia/Kolkata),
+// regardless of the timezone of the machine actually running this code
+// (e.g. local laptop vs GitHub Actions ubuntu-latest runner, which defaults to UTC).
+function getISTDateTime(): string {
+    return new Date().toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
+}
+
+// ✅ Helper: Get current date only, formatted in IST — used for subject line and filename
+function getISTDateOnly(): string {
+    return new Date().toLocaleDateString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+}
  
 // -------------------- STEP 1: Get Azure Token --------------------
 async function getAccessToken(): Promise<string> {
@@ -104,7 +130,7 @@ async function sendReportEmail() {
  
         const reportContent = fs.readFileSync(reportPath);
         const reportBase64 = reportContent.toString('base64');
-        const fileName = `Tracsens_Report_${new Date().toLocaleDateString().replace(/\//g, '-')}.html`;
+        const fileName = `Tracsens_Report_${getISTDateOnly().replace(/\//g, '-')}.html`;
         console.log("✅ Report file read successfully");
         console.log(`Report file size: ${reportContent.length} bytes`);
  
@@ -116,7 +142,7 @@ async function sendReportEmail() {
  
         const emailBody = {
             message: {
-                subject: `[Tracsens Automation] Test Report — ${new Date().toLocaleDateString()} — ${overallStatusText}`,
+                subject: `[Tracsens Automation] Test Report — ${getISTDateOnly()} — ${overallStatusText}`,
                 body: {
                     contentType: 'HTML',
                     content: `
@@ -191,7 +217,7 @@ async function sendReportEmail() {
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 0; font-size: 13px; color: rgb(1, 1, 32); border-top: 1px solid #f3f4f6;">Executed On</td>
-                                    <td style="padding: 10px 0; font-size: 13px; color: rgb(1, 1, 32); font-weight: 600; border-top: 1px solid #f3f4f6;">${new Date().toLocaleString()}</td>
+                                    <td style="padding: 10px 0; font-size: 13px; color: rgb(1, 1, 32); font-weight: 600; border-top: 1px solid #f3f4f6;">${getISTDateTime()} IST</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 10px 0; font-size: 13px; color: rgb(1, 1, 32); border-top: 1px solid #f3f4f6;">Browser</td>
@@ -273,5 +299,3 @@ export default sendReportEmail;
 if (require.main === module) {
     sendReportEmail();
 }
-
-

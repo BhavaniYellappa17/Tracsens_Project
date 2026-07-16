@@ -107,8 +107,8 @@ jobs:
 
       # ✅ Run tests — continue even if tests fail
       - name: Run Playwright Tests
-        run: npx playwright test tests/tracsensTest/outletManagement.spec.ts
-        #run: npx playwright test tests/tracsensTest/homePage.spec.ts
+        #run: npx playwright test tests/tracsensTest/outletManagement.spec.ts
+        run: npx playwright test tests/tracsensTest/homePage.spec.ts
         #run: npx playwright test tests/tracsensTest/NegativeLogin.spec.ts
         continue-on-error: true
         env:
