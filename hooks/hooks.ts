@@ -1,3 +1,104 @@
+// // import { test } from '@playwright/test';
+// // import { LoginPage } from '../pages/Tracsens/loginPage';
+// // import { LogoutPage } from '../pages/Tracsens/logoutPage';
+// // import loginData from '../tests/testdata/loginData.json';
+
+// // // ==================== PAGE OBJECT INSTANCES ====================
+
+// // // LoginPage instance — handles application login flow
+// // let loginPage: LoginPage;
+
+// // // LogoutPage instance — handles application logout flow
+// // let logout: LogoutPage;
+
+// // // Global wait time declarations
+// // declare global {
+// //     var giSMALLWAIT: number;
+// //     var giMEDIUMWAIT: number;
+// //     var giLARGEWAIT: number;
+// // }
+
+// // // ==================== HOOKS ====================
+
+// // /**
+// //  * @hook beforeEach
+// //  * @description Runs before every test across all spec files that import this hook.
+// //  *  1. Sets global wait times based on the browser being used
+// //  *  2. Navigates to the application base URL
+// //  *  3. Logs into the application using credentials from loginData.json
+// //  */
+// // test.beforeEach(async ({ page, browserName }) => {
+// //     console.log("=== BEFORE EACH: Setup START ===");
+
+// //     // -------------------- INITIALIZATION SECTION --------------------
+
+// //     console.log("Initializing Page Object Model instances");
+// //     loginPage = new LoginPage(page);
+// //     logout    = new LogoutPage(page);
+// //     console.log("✅ LoginPage and LogoutPage instances created");
+
+// //     // -------------------- GLOBAL WAIT CONFIGURATION SECTION --------------------
+
+// //     console.log(`ℹ️ Active browser: "${browserName}"`);
+// //     if (browserName === 'firefox') {
+// //         globalThis.giSMALLWAIT  = 2000;
+// //         globalThis.giMEDIUMWAIT = 4000;
+// //         globalThis.giLARGEWAIT  = 10000;
+// //         console.log("ℹ️ Firefox wait times applied");
+// //     } else {
+// //         globalThis.giSMALLWAIT  = 2000;
+// //         globalThis.giMEDIUMWAIT = 4000;
+// //         globalThis.giLARGEWAIT  = 10000;
+// //         console.log("ℹ️ Chromium wait times applied");
+// //     }
+// //     console.log(`ℹ️ SMALL: ${globalThis.giSMALLWAIT}ms | MEDIUM: ${globalThis.giMEDIUMWAIT}ms | LARGE: ${globalThis.giLARGEWAIT}ms`);
+
+// //     // -------------------- NAVIGATION SECTION --------------------
+
+// //     // ✅ Use full URL instead of '/' to avoid baseURL resolution issues
+// //     // between spec files when browser context is recreated
+// //     console.log("Step 1: Navigating to application URL");
+// //     await page.goto('https://prod.tracsens.com/login');
+// //     await page.waitForLoadState('networkidle');
+// //     console.log("✅ Navigation to application URL complete");
+
+// //     // -------------------- LOGIN SECTION --------------------
+
+// //     console.log(`Step 2: Logging in with username: "${loginData.username}"`);
+// //     await loginPage.loginToApplicationT(loginData.username, loginData.password);
+// //     console.log("✅ Login complete — test starting");
+
+// //     console.log("=== BEFORE EACH: Setup END ===");
+// // });
+
+// // /**
+// //  * @hook afterEach
+// //  * @description Runs after every test across all spec files that import this hook.
+// //  * Logs out of the application and handles any logout errors gracefully.
+// //  */
+// // test.afterEach(async ({ page }, testInfo) => {
+// //     console.log("=== AFTER EACH: Teardown START ===");
+// //     console.log(`ℹ️ Test: "${testInfo.title}" | Status: "${testInfo.status}"`);
+
+// //     try {
+// //         // ✅ Wait for page to settle before logout
+// //         // Prevents logout from firing while previous test's actions are still running
+// //         await page.waitForLoadState('networkidle');
+// //         console.log("✅ Page is idle — proceeding with logout");
+
+// //         await logout.logOut();
+// //         console.log("✅ Logout complete");
+
+// //     } catch (error) {
+// //         if (error instanceof Error) {
+// //             // ✅ Don't throw — just log and continue to next spec
+// //             console.log(`⚠️ Logout skipped or failed: ${error.message}`);
+// //         }
+// //     }
+
+// //     console.log("=== AFTER EACH: Teardown END ===");
+// // });
+
 // import { test } from '@playwright/test';
 // import { LoginPage } from '../pages/Tracsens/loginPage';
 // import { LogoutPage } from '../pages/Tracsens/logoutPage';
@@ -5,13 +106,9 @@
 
 // // ==================== PAGE OBJECT INSTANCES ====================
 
-// // LoginPage instance — handles application login flow
 // let loginPage: LoginPage;
-
-// // LogoutPage instance — handles application logout flow
 // let logout: LogoutPage;
 
-// // Global wait time declarations
 // declare global {
 //     var giSMALLWAIT: number;
 //     var giMEDIUMWAIT: number;
@@ -20,13 +117,6 @@
 
 // // ==================== HOOKS ====================
 
-// /**
-//  * @hook beforeEach
-//  * @description Runs before every test across all spec files that import this hook.
-//  *  1. Sets global wait times based on the browser being used
-//  *  2. Navigates to the application base URL
-//  *  3. Logs into the application using credentials from loginData.json
-//  */
 // test.beforeEach(async ({ page, browserName }) => {
 //     console.log("=== BEFORE EACH: Setup START ===");
 
@@ -37,61 +127,83 @@
 //     logout    = new LogoutPage(page);
 //     console.log("✅ LoginPage and LogoutPage instances created");
 
-//     // -------------------- GLOBAL WAIT CONFIGURATION SECTION --------------------
+//     // -------------------- GLOBAL WAIT CONFIGURATION --------------------
 
 //     console.log(`ℹ️ Active browser: "${browserName}"`);
 //     if (browserName === 'firefox') {
 //         globalThis.giSMALLWAIT  = 2000;
 //         globalThis.giMEDIUMWAIT = 4000;
 //         globalThis.giLARGEWAIT  = 10000;
-//         console.log("ℹ️ Firefox wait times applied");
 //     } else {
 //         globalThis.giSMALLWAIT  = 2000;
 //         globalThis.giMEDIUMWAIT = 4000;
 //         globalThis.giLARGEWAIT  = 10000;
-//         console.log("ℹ️ Chromium wait times applied");
 //     }
 //     console.log(`ℹ️ SMALL: ${globalThis.giSMALLWAIT}ms | MEDIUM: ${globalThis.giMEDIUMWAIT}ms | LARGE: ${globalThis.giLARGEWAIT}ms`);
 
 //     // -------------------- NAVIGATION SECTION --------------------
 
-//     // ✅ Use full URL instead of '/' to avoid baseURL resolution issues
-//     // between spec files when browser context is recreated
-//     console.log("Step 1: Navigating to application URL");
-//     await page.goto('https://prod.tracsens.com/login');
-//     await page.waitForLoadState('networkidle');
-//     console.log("✅ Navigation to application URL complete");
+//     console.log("Step 1: Navigating to application login page");
+
+//     // ✅ Retry goto up to 3 times in case new browser context
+//     // is not ready yet when switching between spec files
+//     let navigated = false;
+//     for (let attempt = 1; attempt <= 3; attempt++) {
+//         try {
+//             console.log(`ℹ️ Navigation attempt ${attempt} of 3`);
+//             // await page.goto('https://prod.tracsens.com/login', {
+//             //     waitUntil: 'domcontentloaded',
+//             //     timeout: 30000
+//             // });
+//             await page.goto('/login', {waitUntil: 'domcontentloaded',timeout: 30000});
+//             // ✅ Confirm the URL actually changed from about:blank
+//             //await page.waitForURL('**/login', { timeout: 30000 });
+//             console.log(`✅ Navigation successful on attempt ${attempt}`);
+//             navigated = true;
+//             break;
+//         } catch (error) {
+//             console.log(`⚠️ Navigation attempt ${attempt} failed — retrying in 2s`);
+//             await page.waitForTimeout(2000);
+//         }
+//     }
+
+//     if (!navigated) {
+//         throw new Error('❌ Failed to navigate to login page after 3 attempts');
+//     }
+
+//     // ✅ Wait for page to be fully loaded before login
+//     //await page.waitForLoadState('networkidle');
+//     console.log("✅ Page fully loaded — ready for login");
 
 //     // -------------------- LOGIN SECTION --------------------
 
-//     console.log(`Step 2: Logging in with username: "${loginData.username}"`);
-//     await loginPage.loginToApplicationT(loginData.username, loginData.password);
+//     //console.log(`Step 2: Logging in with username: "${loginData.validLogin}"`);
+//     console.log(`Step 2: Logging in with username: "${loginData.validLogin.username}"`);
+//     await loginPage.loginToApplicationT(loginData.validLogin.username, loginData.validLogin.password);
 //     console.log("✅ Login complete — test starting");
 
 //     console.log("=== BEFORE EACH: Setup END ===");
 // });
 
-// /**
-//  * @hook afterEach
-//  * @description Runs after every test across all spec files that import this hook.
-//  * Logs out of the application and handles any logout errors gracefully.
-//  */
-// test.afterEach(async ({ page }, testInfo) => {
+// test.afterEach(async ({ page },testInfo) => {
 //     console.log("=== AFTER EACH: Teardown START ===");
 //     console.log(`ℹ️ Test: "${testInfo.title}" | Status: "${testInfo.status}"`);
 
 //     try {
-//         // ✅ Wait for page to settle before logout
-//         // Prevents logout from firing while previous test's actions are still running
 //         await page.waitForLoadState('networkidle');
 //         console.log("✅ Page is idle — proceeding with logout");
 
 //         await logout.logOut();
 //         console.log("✅ Logout complete");
 
+//         // ✅ Wait for logout navigation to fully complete
+//         // before Playwright closes this context and opens next spec
+//         await page.waitForLoadState('networkidle');
+//         await page.waitForTimeout(3000);
+//         console.log("✅ Post-logout settle complete — ready for next spec");
+
 //     } catch (error) {
 //         if (error instanceof Error) {
-//             // ✅ Don't throw — just log and continue to next spec
 //             console.log(`⚠️ Logout skipped or failed: ${error.message}`);
 //         }
 //     }
@@ -117,7 +229,16 @@ declare global {
 
 // ==================== HOOKS ====================
 
-test.beforeEach(async ({ page, browserName }) => {
+test.beforeEach(async ({ page, browserName }, testInfo) => {
+
+    // ✅ Skip setup entirely for negative login tests —
+    // they manage their own navigation and login flow, and
+    // must NOT start from an already-logged-in session.
+    if (testInfo.title.toLowerCase().includes('negative login')) {
+        console.log("ℹ️ Skipping BEFORE EACH setup — negative login test handles its own flow");
+        return;
+    }
+
     console.log("=== BEFORE EACH: Setup START ===");
 
     // -------------------- INITIALIZATION SECTION --------------------
@@ -151,13 +272,7 @@ test.beforeEach(async ({ page, browserName }) => {
     for (let attempt = 1; attempt <= 3; attempt++) {
         try {
             console.log(`ℹ️ Navigation attempt ${attempt} of 3`);
-            // await page.goto('https://prod.tracsens.com/login', {
-            //     waitUntil: 'domcontentloaded',
-            //     timeout: 30000
-            // });
-            await page.goto('/login', {waitUntil: 'domcontentloaded',timeout: 30000});
-            // ✅ Confirm the URL actually changed from about:blank
-            //await page.waitForURL('**/login', { timeout: 30000 });
+            await page.goto('/login', { waitUntil: 'domcontentloaded', timeout: 30000 });
             console.log(`✅ Navigation successful on attempt ${attempt}`);
             navigated = true;
             break;
@@ -171,13 +286,10 @@ test.beforeEach(async ({ page, browserName }) => {
         throw new Error('❌ Failed to navigate to login page after 3 attempts');
     }
 
-    // ✅ Wait for page to be fully loaded before login
-    //await page.waitForLoadState('networkidle');
     console.log("✅ Page fully loaded — ready for login");
 
     // -------------------- LOGIN SECTION --------------------
 
-    //console.log(`Step 2: Logging in with username: "${loginData.validLogin}"`);
     console.log(`Step 2: Logging in with username: "${loginData.validLogin.username}"`);
     await loginPage.loginToApplicationT(loginData.validLogin.username, loginData.validLogin.password);
     console.log("✅ Login complete — test starting");
@@ -185,7 +297,17 @@ test.beforeEach(async ({ page, browserName }) => {
     console.log("=== BEFORE EACH: Setup END ===");
 });
 
-test.afterEach(async ({ page },testInfo) => {
+test.afterEach(async ({ page }, testInfo) => {
+
+    // ✅ Skip teardown entirely for negative login tests —
+    // they never reach an authenticated session, so there's
+    // nothing to log out of. Attempting logout here just
+    // times out waiting for a profile icon that will never appear.
+    if (testInfo.title.toLowerCase().includes('negative login')) {
+        console.log("ℹ️ Skipping AFTER EACH teardown — negative login test never had a valid session");
+        return;
+    }
+
     console.log("=== AFTER EACH: Teardown START ===");
     console.log(`ℹ️ Test: "${testInfo.title}" | Status: "${testInfo.status}"`);
 
