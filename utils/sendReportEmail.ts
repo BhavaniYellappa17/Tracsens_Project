@@ -9,12 +9,8 @@ console.log("ℹ️ AZURE_TENANT_ID :", process.env.AZURE_TENANT_ID ? "✅ loade
 console.log("ℹ️ AZURE_CLIENT_ID :", process.env.AZURE_CLIENT_ID ? "✅ loaded" : "❌ missing");
 console.log("ℹ️ AZURE_SECRET    :", process.env.AZURE_CLIENT_SECRET ? "✅ loaded" : "❌ missing");
  
-interface TestSummary {
-    total: number;
-    passed: number;
-    failed: number;
-    flaky: number;
-    skipped: number;
+interface TestSummary {total: number;passed: number;failed: number;flaky: number;skipped: number;
+    
 }
  
 function getTestSummary(): TestSummary {
