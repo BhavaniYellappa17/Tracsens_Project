@@ -115,11 +115,26 @@ async function sendReportEmail() {
     console.log("=== EMAIL REPORT START ===");
 
     try {
-        const reportPath = path.resolve(__dirname, '..', 'monocart-report', 'index.html');
-        console.log(`ℹ️ Report path: ${reportPath}`);
+        // ✅ Attach the ZIP package (HTML report + screenshots + videos)
+        // instead of just index.html, so links inside the report still
+        // resolve correctly once opened outside the original CI folder.
+        const zipPath = path.resolve(__dirname, '..', 'monocart-report', 'Tracsens_Report.zip');
+        const htmlPath = path.resolve(__dirname, '..', 'monocart-report', 'index.html');
 
-        if (!fs.existsSync(reportPath)) {
-            throw new Error(`❌ Report file not found at: ${reportPath}`);
+        let reportPath: string;
+        let isZip: boolean;
+
+        if (fs.existsSync(zipPath)) {
+            reportPath = zipPath;
+            isZip = true;
+            console.log(`ℹ️ Report path (zip): ${reportPath}`);
+        } else if (fs.existsSync(htmlPath)) {
+            // Fallback in case zip generation didn't run for some reason
+            reportPath = htmlPath;
+            isZip = false;
+            console.log(`⚠️ Zip report not found — falling back to HTML: ${reportPath}`);
+        } else {
+            throw new Error(`❌ Report file not found. Checked: ${zipPath} and ${htmlPath}`);
         }
 
         const summary = getTestSummary();
@@ -130,7 +145,9 @@ async function sendReportEmail() {
 
         const reportContent = fs.readFileSync(reportPath);
         const reportBase64 = reportContent.toString('base64');
-        const fileName = `Tracsens_Report_${getISTDateOnly().replace(/\//g, '-')}.html`;
+        const fileExtension = isZip ? 'zip' : 'html';
+        const fileName = `Tracsens_Report_${getISTDateOnly().replace(/\//g, '-')}.${fileExtension}`;
+        const attachmentContentType = isZip ? 'application/zip' : 'text/html';
         console.log("✅ Report file read successfully");
         console.log(`Report file size: ${reportContent.length} bytes`);
 
@@ -230,7 +247,7 @@ async function sendReportEmail() {
                             </table>
 
                             <p style="font-size: 13px; color: #02050a; margin: 28px 0 0 0;">
-                                📎 The full detailed report is attached to this email.
+                                📎 The full detailed report is attached to this email${isZip ? ' as a ZIP file — extract it and open <b>index.html</b> to view screenshots and videos' : ''}.
                             </p>
 
                             <!-- Signature -->
@@ -253,7 +270,7 @@ async function sendReportEmail() {
                     {
                         '@odata.type': '#microsoft.graph.fileAttachment',
                         name: fileName,
-                        contentType: 'text/html',
+                        contentType: attachmentContentType,
                         contentBytes: reportBase64
                     }
                 ]

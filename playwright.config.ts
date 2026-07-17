@@ -87,7 +87,17 @@ export default defineConfig({
         ['html'],
         ['monocart-reporter', {
             name: 'Tracsens Report',
-            outputFile: './monocart-report/index.html'
+            outputFile: './monocart-report/index.html',
+            // ✅ Also produce a zip package containing the HTML report
+            // PLUS its screenshots/videos, so the report stays fully
+            // functional when shared outside the original folder
+            // structure (e.g. as an email attachment).
+            zip: {
+                outputFile: './monocart-report/Tracsens_Report.zip',
+                // Keep the html + assets on disk too, not just the zip —
+                // CI artifact upload steps still need monocart-report/ intact
+                clean: false
+            }
         }]
     ],
 
