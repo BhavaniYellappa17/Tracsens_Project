@@ -10,7 +10,7 @@ console.log("ℹ️ AZURE_CLIENT_ID :", process.env.AZURE_CLIENT_ID ? "✅ loade
 console.log("ℹ️ AZURE_SECRET    :", process.env.AZURE_CLIENT_SECRET ? "✅ loaded" : "❌ missing");
  
 interface TestSummary {total: number;passed: number;failed: number;flaky: number;skipped: number;
-    
+
 }
  
 function getTestSummary(): TestSummary {
@@ -37,7 +37,7 @@ function getTestSummary(): TestSummary {
     } catch (err) {
         console.log("⚠️ Failed to parse monocart-report/index.json:", err);
         return defaultSummary;
-    }
+
 }
  
 function calculatePassRate(summary: TestSummary): string {
